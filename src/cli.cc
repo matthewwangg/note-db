@@ -22,6 +22,14 @@ void HandleListCommand() {
     std::cout << "List" << std::endl;
 }
 
+void HandleSearchCommand(const std::vector<std::string>& args) {
+    std::cout << "Search" << std::endl;
+}
+
+void HandleTagCommand(const std::vector<std::string>& args) {
+    std::cout << "Tag" << std::endl;
+}
+
 void HandleHelpCommand() {
     std::cout << "Available commands:" << std::endl
               << "  new     Create a new note" << std::endl
@@ -48,6 +56,10 @@ void DispatchCommand(const std::vector<std::string>& tokens) {
         HandleDeleteCommand(args);
     } else if (command == "list") {
         HandleListCommand();
+    } else if (command == "search") {
+        HandleSearchCommand(args);
+    } else if (command == "tag") {
+        HandleTagCommand(args);
     } else if (command == "help") {
         HandleHelpCommand();
     } else {
