@@ -6,6 +6,22 @@
 
 namespace cli {
 
+void HandleNewCommand(const std::vector<std::string>& args) {
+    std::cout << "New" << std::endl;
+}
+
+void HandleEditCommand(const std::vector<std::string>& args) {
+    std::cout << "Edit" << std::endl;
+}
+
+void HandleDeleteCommand(const std::vector<std::string>& args) {
+    std::cout << "Delete" << std::endl;
+}
+
+void HandleListCommand() {
+    std::cout << "List" << std::endl;
+}
+
 void HandleHelpCommand() {
     std::cout << "Available commands:" << std::endl
               << "  new     Create a new note" << std::endl
@@ -25,13 +41,13 @@ void DispatchCommand(const std::vector<std::string>& tokens) {
     std::vector<std::string> args(tokens.begin() + 1, tokens.end());
 
     if (command == "new") {
-        // Handle new command
+        HandleNewCommand(args);
     } else if (command == "edit") {
-        // Handle edit command
+        HandleEditCommand(args);
     } else if (command == "delete") {
-        // Handle delete command
+        HandleDeleteCommand(args);
     } else if (command == "list") {
-        // Handle list command
+        HandleListCommand();
     } else if (command == "help") {
         HandleHelpCommand();
     } else {
