@@ -1,12 +1,14 @@
 #include "cli.h"
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 
 int main(int argc, char* argv[]) {
 
-    cli::DispatchCommand()
+    std::vector<std::string> tokens(argv + 1, argv + argc);
+    cli::DispatchCommand(tokens);
 
     return 0;
 }
