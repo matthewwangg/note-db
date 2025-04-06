@@ -32,11 +32,13 @@ void HandleTagCommand(const std::vector<std::string>& args) {
 
 void HandleHelpCommand() {
     std::cout << "Available commands:" << std::endl
-              << "  new     Create a new note" << std::endl
-              << "  edit    Edit an existing note" << std::endl
-              << "  delete  Delete a note" << std::endl
-              << "  list    List all notes" << std::endl
-              << "  help    Show this help message" << std::endl;
+              << "  new <title>         Create a new note" << std::endl
+              << "  edit <id>           Edit a note" << std::endl
+              << "  delete <id>         Delete a note" << std::endl
+              << "  list                List all notes" << std::endl
+              << "  search <query>      Search notes" << std::endl
+              << "  tag <id> <tag>      Tag a note" << std::endl
+              << "  help                Show this message" << std::endl;
 }
 
 void DispatchCommand(const std::vector<std::string>& tokens) {
