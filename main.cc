@@ -1,4 +1,5 @@
 #include "cli.h"
+#include "manager.h"
 
 #include <string>
 #include <vector>

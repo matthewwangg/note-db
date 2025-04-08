@@ -6,28 +6,28 @@
 
 namespace cli {
 
-void HandleNewCommand(const std::vector<std::string>& args) {
-    std::cout << "New" << std::endl;
+void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    manager.CreateNote(args);
 }
 
-void HandleEditCommand(const std::vector<std::string>& args) {
-    std::cout << "Edit" << std::endl;
+void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    manager.EditNote(args);
 }
 
-void HandleDeleteCommand(const std::vector<std::string>& args) {
-    std::cout << "Delete" << std::endl;
+void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    manager.DeleteNote(args);
 }
 
-void HandleListCommand() {
-    std::cout << "List" << std::endl;
+void HandleListCommand(NoteManager& manager) {
+    manager.ListNotes();
 }
 
-void HandleSearchCommand(const std::vector<std::string>& args) {
-    std::cout << "Search" << std::endl;
+void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    manager.SearchNote(args);
 }
 
-void HandleTagCommand(const std::vector<std::string>& args) {
-    std::cout << "Tag" << std::endl;
+void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    manager.TagNote(args);
 }
 
 void HandleHelpCommand() {
@@ -48,21 +48,23 @@ void DispatchCommand(const std::vector<std::string>& tokens) {
         return;
     }
 
+    NoteManager manager("notes");
+
     const std::string& command = tokens[0];
     std::vector<std::string> args(tokens.begin() + 1, tokens.end());
 
     if (command == "new") {
-        HandleNewCommand(args);
+        HandleNewCommand(manager, args);
     } else if (command == "edit") {
-        HandleEditCommand(args);
+        HandleEditCommand(manager, args);
     } else if (command == "delete") {
-        HandleDeleteCommand(args);
+        HandleDeleteCommand(manager, args);
     } else if (command == "list") {
-        HandleListCommand();
+        HandleListCommand(manager);
     } else if (command == "search") {
-        HandleSearchCommand(args);
+        HandleSearchCommand(manager, args);
     } else if (command == "tag") {
-        HandleTagCommand(args);
+        HandleTagCommand(manager, args);
     } else if (command == "help") {
         HandleHelpCommand();
     } else {
