@@ -7,27 +7,27 @@
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    std::cout << "New" << std::endl;
+    manager.CreateNote(args);
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    std::cout << "Edit" << std::endl;
+    manager.EditNote(args);
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    std::cout << "Delete" << std::endl;
+    manager.DeleteNote(args);
 }
 
 void HandleListCommand(NoteManager& manager) {
-    std::cout << "List" << std::endl;
+    manager.ListNotes();
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    std::cout << "Search" << std::endl;
+    manager.SearchNote(args);
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    std::cout << "Tag" << std::endl;
+    manager.TagNote(args);
 }
 
 void HandleHelpCommand() {

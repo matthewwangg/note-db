@@ -18,7 +18,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
 
 void HandleHelpCommand();
 
-void DispatchCommand(NoteManager manager, const std::vector<std::string>& tokens);
+void DispatchCommand(NoteManager& manager, const std::vector<std::string>& tokens);
 
 }
 
