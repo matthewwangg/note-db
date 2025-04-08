@@ -1,11 +1,14 @@
 #include "manager.h"
 
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
 
-NoteManager::NoteManager(const std::string& notes_directory) {
-
+NoteManager::NoteManager(const std::string& notes_directory)
+    : notes_directory_(notes_directory)
+{
+    editor_ = std::getenv("EDITOR") ? std::getenv("EDITOR") : "nano";
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {

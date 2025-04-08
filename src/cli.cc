@@ -42,11 +42,13 @@ void HandleHelpCommand() {
 }
 
 
-void DispatchCommand(NoteManager& manager, const std::vector<std::string>& tokens) {
+void DispatchCommand(const std::vector<std::string>& tokens) {
     if (tokens.empty()) {
         HandleHelpCommand();
         return;
     }
+
+    NoteManager manager("notes");
 
     const std::string& command = tokens[0];
     std::vector<std::string> args(tokens.begin() + 1, tokens.end());

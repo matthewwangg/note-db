@@ -2,6 +2,7 @@
 #define NOTE_DB_MANAGER_H
 
 #include <string>
+#include <filesystem>
 #include <vector>
 
 class NoteManager {
@@ -16,6 +17,9 @@ public:
     void SearchNote(const std::vector<std::string>& args);
     void TagNote(const std::vector<std::string>& args);
 
+private:
+    std::filesystem::path notes_directory_;
+    std::string editor_;
 };
 
 #endif //NOTE_DB_MANAGER_H
