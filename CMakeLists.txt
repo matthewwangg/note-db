@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(note_db
         main.cc
         src/cli.cc
-        src/note.cc)
+        src/note.cc
+        src/manager.cc)
 
 target_include_directories(note_db PRIVATE include)
