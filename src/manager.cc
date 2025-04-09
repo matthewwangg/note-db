@@ -17,7 +17,11 @@ NoteManager::NoteManager(const std::string& notes_directory)
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {
-    std::cout << "New" << std::endl;
+    std::string filename = args[0] + ".md";
+    Note new_note = {filename, args[0], "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
+    new_note.SaveToFile(notes_directory_);
+    std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
+    std::system(command.c_str());
 }
 
 void NoteManager::ListNotes() {

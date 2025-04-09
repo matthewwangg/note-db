@@ -61,7 +61,7 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
 
 void Note::SaveToFile(const std::filesystem::path& path) const {
     std::filesystem::path final_path = path / filename;
-    std::ofstream out(final_path);
+    std::ofstream out(final_path, std::ios::binary);
 
     if (!out) {
         return;
