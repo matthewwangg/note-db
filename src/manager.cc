@@ -9,6 +9,10 @@ NoteManager::NoteManager(const std::string& notes_directory)
     : notes_directory_(notes_directory)
 {
     editor_ = std::getenv("EDITOR") ? std::getenv("EDITOR") : "nano";
+
+    if (!std::filesystem::exists(notes_directory_)) {
+        std::filesystem::create_directories(notes_directory_);
+    }
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {
