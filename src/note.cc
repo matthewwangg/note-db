@@ -1,7 +1,9 @@
 #include "note.h"
 
+#include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 
 Note Note::LoadFromFile(const std::filesystem::path& path) {
@@ -14,15 +16,41 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
     }
 
     std::string line;
-    bool first_line = true;
+    bool metadata = false;
     while(std::getline(in, line)) {
-        if (first_line) {
-            if (line.rfind("# ", 0) == 0) {
-                note.title = line.substr(2);
+        if (line == "---") {
+            metadata = !metadata;
+        } else if (metadata) {
+            if (line.rfind("title: ", 0) == 0) {
+                note.title = line.substr(7);
+            } else if (line.rfind("created: ", 0) == 0 || line.rfind("updated: ", 0) == 0) {
+                std::string date_string = line.substr(9);
+
+                int year = std::stoi(date_string.substr(0, 4));
+                int month = std::stoi(date_string.substr(5, 2));
+                int day = std::stoi(date_string.substr(8, 2));
+                std::chrono::sys_days date = std::chrono::year(year) / month / day;
+
+                if (line.rfind("created: ", 0) == 0) {
+                    note.created = date;
+                } else if (line.rfind("updated: ", 0) == 0) {
+                    note.updated = date;
+                }
+            } else if (line.rfind("tags: ", 0) == 0) {
+                std::string tags = line.substr(6);
+
+                std::string delimiter = ", ";
+                size_t start = 0;
+                size_t end;
+
+                while ((end = tags.find(delimiter, start)) != std::string::npos) {
+                    note.tags.insert(tags.substr(start, end - start));
+                    start = end + delimiter.length();
+                }
+                note.tags.insert(tags.substr(start));
             } else {
-                note.title = line;
+                continue;
             }
-            first_line = false;
         } else {
             note.content += line + "\n";
         }
@@ -38,7 +66,23 @@ void Note::SaveToFile(const std::filesystem::path& path) const {
     if (!out) {
         return;
     }
+    const auto created_day = std::chrono::floor<std::chrono::days>(created);
+    const auto updated_day = std::chrono::floor<std::chrono::days>(updated);
 
-    out << "# " << title << std::endl;
+    out << "---" << std::endl;
+    out << "title: " << title << std::endl;
+    out << "created: " << created_day << std::endl;
+    out << "updated: " << updated_day << std::endl;
+    out << "tags: [";
+    bool first = true;
+    for (const std::string &tag: tags) {
+        if (!first) {
+            out << ", ";
+        }
+        out << tag;
+        first = false;
+    }
+    out << "]" << std::endl;
+    out << "---" << std::endl;
     out << content;
 }
