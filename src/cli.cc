@@ -42,16 +42,16 @@ void HandleHelpCommand() {
 }
 
 
-void DispatchCommand(const std::vector<std::string>& tokens) {
-    if (tokens.empty()) {
+void DispatchCommand(const std::vector<std::string>& command_args) {
+    if (command_args.empty()) {
         HandleHelpCommand();
         return;
     }
 
     NoteManager manager("notes");
 
-    const std::string& command = tokens[0];
-    std::vector<std::string> args(tokens.begin() + 1, tokens.end());
+    const std::string& command = command_args[0];
+    std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
     if (command == "new") {
         HandleNewCommand(manager, args);

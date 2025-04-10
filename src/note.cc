@@ -5,7 +5,6 @@
 #include <fstream>
 #include <iostream>
 
-
 Note Note::LoadFromFile(const std::filesystem::path& path) {
     Note note;
     note.filename = path.filename().string();
@@ -67,6 +66,7 @@ void Note::SaveToFile(const std::filesystem::path& path) const {
     if (!out) {
         return;
     }
+
     const auto created_day = std::chrono::floor<std::chrono::days>(created);
     const auto updated_day = std::chrono::floor<std::chrono::days>(updated);
 
