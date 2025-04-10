@@ -1,4 +1,5 @@
 #include "cli.h"
+#include "utils/display_utils.h"
 
 #include <iostream>
 #include <vector>
@@ -31,14 +32,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
 }
 
 void HandleHelpCommand() {
-    std::cout << "Available commands:" << std::endl
-              << "  new <filename>           Create a new note" << std::endl
-              << "  edit <filename>          Edit a note" << std::endl
-              << "  delete <filename>        Delete a note" << std::endl
-              << "  list                     List all notes" << std::endl
-              << "  search <query>           Search note contents" << std::endl
-              << "  tag <filename> <tag>     Add a tag to a note" << std::endl
-              << "  help                     Show this message" << std::endl;
+    display_utils::PrintCommands();
 }
 
 
