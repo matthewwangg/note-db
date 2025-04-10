@@ -36,15 +36,20 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
                 } else if (line.rfind("updated: ", 0) == 0) {
                     note.updated = date;
                 }
-            } else if (line.rfind("tags: ", 0) == 0) {
-                std::string tags = line.substr(6);
+            } else if (line.rfind("tags: [", 0) == 0) {
+                if (line == "tags: []") {
+                    continue;
+                }
+
+                std::string tags = line.substr(7);
 
                 std::string delimiter = ", ";
                 size_t start = 0;
                 size_t end;
 
                 while ((end = tags.find(delimiter, start)) != std::string::npos) {
-                    note.tags.insert(tags.substr(start, end - start));
+                    std::string tag = tags.substr(start, end - start);
+                    note.tags.insert(tag);
                     start = end + delimiter.length();
                 }
                 note.tags.insert(tags.substr(start));
