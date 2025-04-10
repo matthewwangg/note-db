@@ -37,11 +37,7 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
                     note.updated = date;
                 }
             } else if (line.rfind("tags: [", 0) == 0) {
-                if (line == "tags: []") {
-                    continue;
-                }
-
-                std::string tags = line.substr(7);
+                std::string tags = line.substr(7, line.size() - 8);
 
                 std::string delimiter = ", ";
                 size_t start = 0;

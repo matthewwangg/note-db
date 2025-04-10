@@ -83,6 +83,11 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args) {
-    std::cout << "Tag" << std::endl;
+    std::string filename = args[0] + ".md";
+    std::filesystem::path file_path = notes_directory_ / filename;
+
+    Note note = Note::LoadFromFile(notes_directory_ / filename);
+    note.tags.insert(args[1]);
+    note.SaveToFile(notes_directory_);
 }
 
