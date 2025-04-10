@@ -1,4 +1,5 @@
 #include "manager.h"
+#include "note.h"
 
 #include <filesystem>
 #include <iostream>
@@ -16,26 +17,113 @@ NoteManager::NoteManager(const std::string& notes_directory)
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {
-    std::cout << "New" << std::endl;
+    std::string filename = args[0] + ".md";
+    Note new_note = {filename, args[0], "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
+    new_note.SaveToFile(notes_directory_);
+    std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
+    std::system(command.c_str());
 }
 
 void NoteManager::ListNotes() {
-    std::cout << "List" << std::endl;
+    std::vector<Note> notes;
+    for(auto const& path : std::filesystem::directory_iterator(notes_directory_)) {
+        notes.push_back(Note::LoadFromFile(path));
+    }
+
+    const int filename_width = 20;
+    const int title_width = 20;
+    const int date_width = 20;
+    const int content_preview_width = 50;
+
+    std::cout << std::left
+              << std::setw(filename_width) << "Filename"
+              << std::setw(title_width) << "Title"
+              << std::setw(date_width) << "Created"
+              << std::setw(date_width) << "Updated"
+              << std::setw(content_preview_width) << "Preview"
+              << std::endl;
+
+    for (const Note& n : notes) {
+        auto created_day = std::chrono::floor<std::chrono::days>(n.created);
+        auto updated_day = std::chrono::floor<std::chrono::days>(n.updated);
+        auto preview_length = std::min<size_t>(static_cast<size_t>(content_preview_width - 3), n.content.find('\n'));
+        auto content_preview = n.content.substr(0, preview_length) + "...";
+
+        std::cout << std::left
+                  << std::setw(filename_width) << n.filename
+                  << std::setw(title_width) << n.title
+                  << std::setw(date_width) << created_day
+                  << std::setw(date_width) << updated_day
+                  << std::setw(content_preview_width) << content_preview
+                  << std::endl;
+    }
 }
 
 void NoteManager::EditNote(const std::vector<std::string>& args) {
-    std::cout << "Edit" << std::endl;
+    std::string filename = args[0] + ".md";
+    Note note = Note::LoadFromFile(notes_directory_ / filename);
+    note.updated = std::chrono::system_clock::now();
+    note.SaveToFile(notes_directory_);
+
+    std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
+    std::system(command.c_str());
 }
 
 void NoteManager::DeleteNote(const std::vector<std::string>& args) {
-    std::cout << "Delete" << std::endl;
+    std::string filename = args[0] + ".md";
+    std::filesystem::path file_path = notes_directory_ / filename;
+
+    if (std::filesystem::exists(file_path)) {
+        std::filesystem::remove(file_path);
+    }
 }
 
 void NoteManager::SearchNote(const std::vector<std::string>& args) {
-    std::cout << "Search" << std::endl;
+    std::string search_query = args[0];
+    std::vector<Note> notes;
+
+    for (const auto& path : std::filesystem::directory_iterator(notes_directory_)) {
+        Note note = Note::LoadFromFile(path);
+        if (note.title.find(search_query) != std::string::npos || note.filename.find(search_query) != std::string::npos) {
+            notes.push_back(note);
+        }
+    }
+
+    const int filename_width = 20;
+    const int title_width = 20;
+    const int date_width = 20;
+    const int content_preview_width = 50;
+
+    std::cout << std::left
+              << std::setw(filename_width) << "Filename"
+              << std::setw(title_width) << "Title"
+              << std::setw(date_width) << "Created"
+              << std::setw(date_width) << "Updated"
+              << std::setw(content_preview_width) << "Preview"
+              << std::endl;
+
+    for (const Note& n : notes) {
+        auto created_day = std::chrono::floor<std::chrono::days>(n.created);
+        auto updated_day = std::chrono::floor<std::chrono::days>(n.updated);
+        auto preview_length = std::min<size_t>(static_cast<size_t>(content_preview_width - 3), n.content.find('\n'));
+        auto content_preview = n.content.substr(0, preview_length) + "...";
+
+        std::cout << std::left
+                  << std::setw(filename_width) << n.filename
+                  << std::setw(title_width) << n.title
+                  << std::setw(date_width) << created_day
+                  << std::setw(date_width) << updated_day
+                  << std::setw(content_preview_width) << content_preview
+                  << std::endl;
+    }
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args) {
-    std::cout << "Tag" << std::endl;
+    std::string filename = args[0] + ".md";
+    std::filesystem::path file_path = notes_directory_ / filename;
+
+    Note note = Note::LoadFromFile(notes_directory_ / filename);
+    note.tags.insert(args[1]);
+    note.SaveToFile(notes_directory_);
 }
 
