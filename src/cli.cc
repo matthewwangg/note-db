@@ -8,14 +8,29 @@
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command new!" << std::endl;
+        std::cout << "Proper Usage: new <filename>" << std::endl;
+        return;
+    }
     manager.CreateNote(args);
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command edit!" << std::endl;
+        std::cout << "Proper Usage: edit <filename>" << std::endl;
+        return;
+    }
     manager.EditNote(args);
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command delete!" << std::endl;
+        std::cout << "Proper Usage: delete <filename>" << std::endl;
+        return;
+    }
     manager.DeleteNote(args);
 }
 
@@ -24,10 +39,20 @@ void HandleListCommand(NoteManager& manager) {
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command search!" << std::endl;
+        std::cout << "Proper Usage: search <query>" << std::endl;
+        return;
+    }
     manager.SearchNote(args);
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 2) {
+        std::cout << "Invalid usage of command tag!" << std::endl;
+        std::cout << "Proper Usage: tag <filename> <tag>" << std::endl;
+        return;
+    }
     manager.TagNote(args);
 }
 
