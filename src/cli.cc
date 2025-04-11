@@ -1,5 +1,6 @@
 #include "cli.h"
 #include "utils/display_utils.h"
+#include "utils/input_validation_utils.h"
 
 #include <iostream>
 #include <vector>
@@ -8,15 +9,36 @@
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    manager.CreateNote(args);
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command new!" << std::endl;
+        std::cout << "Proper Usage: new <filename>" << std::endl;
+        return;
+    }
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.CreateNote(normalized_args);
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    manager.EditNote(args);
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command edit!" << std::endl;
+        std::cout << "Proper Usage: edit <filename>" << std::endl;
+        return;
+    }
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.EditNote(normalized_args);
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    manager.DeleteNote(args);
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command delete!" << std::endl;
+        std::cout << "Proper Usage: delete <filename>" << std::endl;
+        return;
+    }
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.DeleteNote(normalized_args);
 }
 
 void HandleListCommand(NoteManager& manager) {
@@ -24,11 +46,23 @@ void HandleListCommand(NoteManager& manager) {
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command search!" << std::endl;
+        std::cout << "Proper Usage: search <query>" << std::endl;
+        return;
+    }
     manager.SearchNote(args);
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    manager.TagNote(args);
+    if (args.size() != 2) {
+        std::cout << "Invalid usage of command tag!" << std::endl;
+        std::cout << "Proper Usage: tag <filename> <tag>" << std::endl;
+        return;
+    }
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.TagNote(normalized_args);
 }
 
 void HandleHelpCommand() {
@@ -46,6 +80,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
+
+    if (!input_validation_utils::ValidateArgs(args)) {
+        std::cout << "Invalid argument(s)." << std::endl;
+        return;
+    }
 
     if (command == "new") {
         HandleNewCommand(manager, args);

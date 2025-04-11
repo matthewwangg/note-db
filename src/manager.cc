@@ -17,8 +17,9 @@ NoteManager::NoteManager(const std::string& notes_directory)
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {
-    std::string filename = args[0] + ".md";
-    Note new_note = {filename, args[0], "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
+    std::string filename = args[0];
+    std::string title = args[0].substr(0, args[0].length() - 3);
+    Note new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
     new_note.SaveToFile(notes_directory_);
     std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
     std::system(command.c_str());
@@ -34,7 +35,7 @@ void NoteManager::ListNotes() {
 }
 
 void NoteManager::EditNote(const std::vector<std::string>& args) {
-    std::string filename = args[0] + ".md";
+    std::string filename = args[0];
     Note note = Note::LoadFromFile(notes_directory_ / filename);
     note.updated = std::chrono::system_clock::now();
     note.SaveToFile(notes_directory_);
@@ -44,7 +45,7 @@ void NoteManager::EditNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::DeleteNote(const std::vector<std::string>& args) {
-    std::string filename = args[0] + ".md";
+    std::string filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 
     if (std::filesystem::exists(file_path)) {
@@ -67,7 +68,7 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args) {
-    std::string filename = args[0] + ".md";
+    std::string filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 
     Note note = Note::LoadFromFile(notes_directory_ / filename);

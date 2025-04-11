@@ -47,7 +47,10 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
                     note.tags.insert(tag);
                     start = end + delimiter.length();
                 }
-                note.tags.insert(tags.substr(start));
+                std::string final_tag = tags.substr(start);
+                if (!final_tag.empty()) {
+                    note.tags.insert(final_tag);
+                }
             } else {
                 continue;
             }
