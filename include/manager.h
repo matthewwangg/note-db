@@ -3,13 +3,14 @@
 
 #include <index.h>
 
-#include <string>
 #include <filesystem>
+#include <memory>
+#include <string>
 #include <vector>
 
 class NoteManager {
 public:
-    explicit NoteManager(const std::string& notes_directory, const SearchIndex& index);
+    explicit NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index);
     ~NoteManager() = default;
 
     void CreateNote(const std::vector<std::string>& args);
@@ -21,7 +22,7 @@ public:
 
 private:
     std::string editor_;
-    SearchIndex index_;
+    std::shared_ptr<SearchIndex> index_;
     std::filesystem::path notes_directory_;
 
 };

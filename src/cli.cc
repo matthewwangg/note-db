@@ -4,6 +4,7 @@
 #include "utils/input_validation_utils.h"
 
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -78,8 +79,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     std::string notes_directory = "notes";
 
-    SearchIndex index;
-    index.BuildIndex(notes_directory);
+    std::shared_ptr<SearchIndex> index = std::make_shared<SearchIndex>();
+    index->BuildIndex(notes_directory);
 
     NoteManager manager(notes_directory, index);
 

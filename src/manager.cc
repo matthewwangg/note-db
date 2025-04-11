@@ -4,10 +4,11 @@
 #include "utils/display_utils.h"
 
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <vector>
 
-NoteManager::NoteManager(const std::string& notes_directory, const SearchIndex& index)
+NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index)
     : notes_directory_(notes_directory),
       index_(index)
 {
@@ -57,7 +58,7 @@ void NoteManager::DeleteNote(const std::vector<std::string>& args) {
 
 void NoteManager::SearchNote(const std::vector<std::string>& args) {
     const std::string& search_query = args[0];
-    const std::vector<std::string> filenames = index_.Search(search_query);
+    const std::vector<std::string> filenames = index_->Search(search_query);
     std::vector<Note> notes;
 
     for (const auto& path : std::filesystem::directory_iterator(notes_directory_)) {
