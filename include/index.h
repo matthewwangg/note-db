@@ -1,6 +1,9 @@
 #ifndef NOTE_DB_INDEX_H
 #define NOTE_DB_INDEX_H
 
+#include "note.h"
+
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -8,6 +11,8 @@
 
 class SearchIndex {
 public:
+    void BuildIndex(const std::filesystem::path& notes_directory);
+    void IndexNote(const Note& note);
     std::vector<std::string> Search(const std::string& query);
 
 private:

@@ -1,4 +1,5 @@
 #include "cli.h"
+#include "index.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
 
@@ -75,7 +76,12 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
-    NoteManager manager("notes");
+    std::string notes_directory = "notes";
+
+    NoteManager manager(notes_directory);
+
+    SearchIndex index;
+    index.BuildIndex(notes_directory);
 
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
