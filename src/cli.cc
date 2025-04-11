@@ -72,6 +72,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
+    if (!input_validation_utils::ValidateArgs(args)) {
+        std::cout << "Invalid argument(s)." << std::endl;
+        return;
+    }
+
     if (command == "new") {
         HandleNewCommand(manager, args);
     } else if (command == "edit") {
