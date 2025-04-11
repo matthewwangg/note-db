@@ -5,8 +5,11 @@
 #include <vector>
 
 namespace input_validation_utils {
-    bool ValidateArgs(const std::vector<std::string>& args);
-    bool IsValidArg(const std::string& arg);
+
+bool ValidateArgs(const std::vector<std::string>& args);
+bool IsValidArg(const std::string& arg);
+std::string NormalizeFilename(const std::string& name);
+
 }
 
 #endif //NOTE_DB_INPUT_VALIDATION_UTILS_H

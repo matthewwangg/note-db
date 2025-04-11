@@ -1,5 +1,6 @@
 #include "cli.h"
 #include "utils/display_utils.h"
+#include "utils/input_validation_utils.h"
 
 #include <iostream>
 #include <vector>
@@ -13,7 +14,9 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
         std::cout << "Proper Usage: new <filename>" << std::endl;
         return;
     }
-    manager.CreateNote(args);
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.CreateNote(normalized_args);
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -22,7 +25,9 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
         std::cout << "Proper Usage: edit <filename>" << std::endl;
         return;
     }
-    manager.EditNote(args);
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.EditNote(normalized_args);
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -31,7 +36,9 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
         std::cout << "Proper Usage: delete <filename>" << std::endl;
         return;
     }
-    manager.DeleteNote(args);
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.DeleteNote(normalized_args);
 }
 
 void HandleListCommand(NoteManager& manager) {
@@ -53,7 +60,9 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
         std::cout << "Proper Usage: tag <filename> <tag>" << std::endl;
         return;
     }
-    manager.TagNote(args);
+    std::vector<std::string> normalized_args = args;
+    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    manager.TagNote(normalized_args);
 }
 
 void HandleHelpCommand() {

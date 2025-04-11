@@ -28,11 +28,24 @@ bool IsValidArg(const std::string& arg) {
         return false;
     }
 
-    if (arg.length() > 30) {
+    if (arg.length() > 30 || arg == ".md") {
         return false;
     }
 
     return true;
+}
+
+std::string NormalizeFilename(const std::string& name) {
+    std::string normalized_filename;
+    normalized_filename.reserve(name.size() + 3);
+
+    for (char c : name) {
+        normalized_filename.push_back(std::tolower(c));
+    }
+    if (name.length() < 3 || name.substr(name.length() - 3) != ".md") {
+        normalized_filename += ".md";
+    }
+    return normalized_filename;
 }
 
 }
