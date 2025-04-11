@@ -1,13 +1,15 @@
 #ifndef NOTE_DB_MANAGER_H
 #define NOTE_DB_MANAGER_H
 
+#include <index.h>
+
 #include <string>
 #include <filesystem>
 #include <vector>
 
 class NoteManager {
 public:
-    explicit NoteManager(const std::string& notes_directory);
+    explicit NoteManager(const std::string& notes_directory, const SearchIndex& index);
     ~NoteManager() = default;
 
     void CreateNote(const std::vector<std::string>& args);
@@ -18,8 +20,10 @@ public:
     void TagNote(const std::vector<std::string>& args);
 
 private:
-    std::filesystem::path notes_directory_;
     std::string editor_;
+    SearchIndex index_;
+    std::filesystem::path notes_directory_;
+
 };
 
 #endif //NOTE_DB_MANAGER_H

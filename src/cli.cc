@@ -78,10 +78,10 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     std::string notes_directory = "notes";
 
-    NoteManager manager(notes_directory);
-
     SearchIndex index;
     index.BuildIndex(notes_directory);
+
+    NoteManager manager(notes_directory, index);
 
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());

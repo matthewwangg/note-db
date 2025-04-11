@@ -1,3 +1,4 @@
+#include "index.h"
 #include "manager.h"
 #include "note.h"
 #include "utils/display_utils.h"
@@ -6,8 +7,9 @@
 #include <string>
 #include <vector>
 
-NoteManager::NoteManager(const std::string& notes_directory)
-    : notes_directory_(notes_directory)
+NoteManager::NoteManager(const std::string& notes_directory, const SearchIndex& index)
+    : notes_directory_(notes_directory),
+      index_(index)
 {
     editor_ = std::getenv("EDITOR") ? std::getenv("EDITOR") : "nano";
 
@@ -54,12 +56,13 @@ void NoteManager::DeleteNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::SearchNote(const std::vector<std::string>& args) {
-    std::string search_query = args[0];
+    const std::string& search_query = args[0];
+    const std::vector<std::string> filenames = index_.Search(search_query);
     std::vector<Note> notes;
 
     for (const auto& path : std::filesystem::directory_iterator(notes_directory_)) {
         Note note = Note::LoadFromFile(path);
-        if (note.title.find(search_query) != std::string::npos || note.filename.find(search_query) != std::string::npos) {
+        if (std::find(filenames.begin(), filenames.end(), note.filename) != filenames.end()) {
             notes.push_back(note);
         }
     }
