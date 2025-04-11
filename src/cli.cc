@@ -69,7 +69,6 @@ void HandleHelpCommand() {
     display_utils::PrintCommands();
 }
 
-
 void DispatchCommand(const std::vector<std::string>& command_args) {
     if (command_args.empty()) {
         HandleHelpCommand();

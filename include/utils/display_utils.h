@@ -7,9 +7,11 @@
 #include <vector>
 
 namespace display_utils {
-    void PrintNotes(std::vector<Note>& notes);
-    void PrintCommands();
-    void Debug(std::string debug_message);
+
+void PrintNotes(std::vector<Note>& notes);
+void PrintCommands();
+void Debug(std::string debug_message);
+
 }
 
 #endif //NOTE_DB_DISPLAY_UTILS_H
