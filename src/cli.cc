@@ -2,6 +2,7 @@
 #include "index.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
+#include "utils/config_utils.h"
 
 #include <iostream>
 #include <memory>
@@ -67,6 +68,16 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     manager.TagNote(normalized_args);
 }
 
+void HandleInitCommand(const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command init!" << std::endl;
+        std::cout << "Proper Usage: init <directory>" << std::endl;
+        return;
+    }
+
+    config_utils::SetupConfigFile(args);
+}
+
 void HandleHelpCommand() {
     display_utils::PrintCommands();
 }
@@ -77,15 +88,25 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
-    std::string notes_directory = "notes";
+    const std::string& command = command_args[0];
+    std::vector<std::string> args(command_args.begin() + 1, command_args.end());
+
+    if (command == "init") {
+        HandleInitCommand(args);
+        return;
+    }
+
+    std::string notes_directory = config_utils::LoadNotesDirectory(std::filesystem::current_path());
+    if (notes_directory.empty()) {
+        std::cout << "Missing or invalid .notedb/config.json in current directory!" << std::endl;
+        std::cout << "Try running init <directory> to target where your note files are" << std::endl;
+        return;
+    }
 
     std::shared_ptr<SearchIndex> index = std::make_shared<SearchIndex>();
     index->BuildIndex(notes_directory);
 
     NoteManager manager(notes_directory, index);
-
-    const std::string& command = command_args[0];
-    std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
     if (!input_validation_utils::ValidateArgs(args)) {
         std::cout << "Invalid argument(s)." << std::endl;
