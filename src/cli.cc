@@ -1,8 +1,10 @@
 #include "cli.h"
+#include "index.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
 
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -75,7 +77,12 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
-    NoteManager manager("notes");
+    std::string notes_directory = "notes";
+
+    std::shared_ptr<SearchIndex> index = std::make_shared<SearchIndex>();
+    index->BuildIndex(notes_directory);
+
+    NoteManager manager(notes_directory, index);
 
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());

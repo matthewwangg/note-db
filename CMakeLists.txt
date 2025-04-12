@@ -9,6 +9,7 @@ add_executable(note_db
         src/note.cc
         src/manager.cc
         src/utils/display_utils.cc
-        src/utils/input_validation_utils.cc)
+        src/utils/input_validation_utils.cc
+        src/index.cc)
 
 target_include_directories(note_db PRIVATE include)
