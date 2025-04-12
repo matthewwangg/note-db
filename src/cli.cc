@@ -2,6 +2,7 @@
 #include "index.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
+#include "utils/config_utils.h"
 
 #include <iostream>
 #include <memory>
@@ -77,7 +78,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
-    std::string notes_directory = "notes";
+    std::string notes_directory = config_utils::LoadNotesDirectory(std::filesystem::current_path());
+    if (notes_directory.empty()) {
+        std::cout << "Missing or invalid .notedb/config.json in current directory.\n";
+        return;
+    }
 
     std::shared_ptr<SearchIndex> index = std::make_shared<SearchIndex>();
     index->BuildIndex(notes_directory);
