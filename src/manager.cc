@@ -12,7 +12,7 @@ NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<Sea
     : notes_directory_(notes_directory),
       index_(std::move(index))
 {
-    editor_ = std::getenv("EDITOR") ? std::getenv("EDITOR") : "nano";
+    editor_ = std::getenv("NOTEDB_EDITOR") ? std::getenv("NOTEDB_EDITOR") : "nano";
 
     if (!std::filesystem::exists(notes_directory_)) {
         std::filesystem::create_directories(notes_directory_);
