@@ -104,8 +104,9 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
-    if (!std::filesystem::exists(args[0])) {
-        std::cout << "File doesn't exist!" << std::endl;
+    std::filesystem::path file_path = std::filesystem::absolute(args[0]);
+    if (!std::filesystem::exists(file_path)) {
+        std::cout << "File doesn't exist: " << file_path << std::endl;
         return;
     }
 

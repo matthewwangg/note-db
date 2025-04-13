@@ -78,9 +78,12 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
 void NoteManager::ImportNote(const std::vector<std::string>& args) {
     const std::filesystem::path file_path = args[0];
     const std::string filename = file_path.filename().string();
-    const std::filesystem::path dest_path = notes_directory_ / filename;
 
-    std::filesystem::copy_file(file_path,dest_path,std::filesystem::copy_options::overwrite_existing);
+    Note note = Note::LoadFromFile(file_path);
+    note.title = filename.substr(0, filename.length() - 3);
+    note.created = std::chrono::system_clock::now();
+    note.updated = std::chrono::system_clock::now();
+    note.SaveToFile(notes_directory_);
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args) {
