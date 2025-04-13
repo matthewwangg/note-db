@@ -3,6 +3,7 @@
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
 #include "utils/config_utils.h"
+#include "utils/template_utils.h"
 
 #include <iostream>
 #include <memory>
@@ -12,9 +13,9 @@
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if ((args.size() != 1 && args.size() != 3) || (args.size() == 3 && args[1] != "--template")) {
         std::cout << "Invalid usage of command new!" << std::endl;
-        std::cout << "Proper Usage: new <filename>" << std::endl;
+        std::cout << "Proper Usage: new <filename> [--template <name>]" << std::endl;
         return;
     }
 
@@ -121,6 +122,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
     }
 
     config_utils::SetupConfigFile(args);
+    template_utils::SetupTemplateDirectory(args);
 }
 
 void HandleHelpCommand() {
