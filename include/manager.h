@@ -13,6 +13,8 @@ public:
     explicit NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index);
     ~NoteManager() = default;
 
+    std::filesystem::path get_notes_directory();
+
     void CreateNote(const std::vector<std::string>& args);
     void ListNotes();
     void EditNote(const std::vector<std::string>& args);

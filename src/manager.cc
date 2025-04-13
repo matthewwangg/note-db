@@ -80,3 +80,7 @@ void NoteManager::TagNote(const std::vector<std::string>& args) {
     note.SaveToFile(notes_directory_);
 }
 
+std::filesystem::path NoteManager::get_notes_directory() {
+    return notes_directory_;
+}
+

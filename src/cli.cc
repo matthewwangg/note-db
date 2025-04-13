@@ -19,6 +19,12 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     }
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+
+    if (std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
+        std::cout << "File " << normalized_args[0] << " already exists!" << std::endl;
+        return;
+    }
+
     manager.CreateNote(normalized_args);
 }
 
@@ -30,6 +36,12 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     }
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
+        std::cout << "File " << normalized_args[0] << " doesn't exist yet!" << std::endl;
+        return;
+    }
+
     manager.EditNote(normalized_args);
 }
 
@@ -41,6 +53,12 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     }
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
+        std::cout << "File " << normalized_args[0] << " doesn't exist!" << std::endl;
+        return;
+    }
+
     manager.DeleteNote(normalized_args);
 }
 
@@ -65,6 +83,12 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     }
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
+        std::cout << "File " << normalized_args[0] << " doesn't exist yet!" << std::endl;
+        return;
+    }
+
     manager.TagNote(normalized_args);
 }
 
