@@ -14,6 +14,8 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
 void HandleListCommand(NoteManager& manager);
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleInitCommand(const std::vector<std::string>& args);
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
 
 void HandleHelpCommand();

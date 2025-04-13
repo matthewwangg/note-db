@@ -97,6 +97,15 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     manager.TagNote(normalized_args);
 }
 
+void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() != 1) {
+        std::cout << "Invalid usage of command import!" << std::endl;
+        std::cout << "Proper Usage: import <filepath>" << std::endl;
+        return;
+    }
+    manager.ImportCommand(args);
+}
+
 void HandleInitCommand(const std::vector<std::string>& args) {
     if (args.size() != 1) {
         std::cout << "Invalid usage of command init!" << std::endl;
@@ -154,8 +163,10 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleSearchCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
+    } else if (command == "import") {
+        HandleImportCommand(manager, args);
     } else if (command == "help") {
-        HandleHelpCommand();
+            HandleHelpCommand();
     } else {
         std::cout << "Unsupported command: " << command << "\n";
         HandleHelpCommand();
