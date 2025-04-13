@@ -27,7 +27,7 @@ void NoteManager::CreateNote(const std::vector<std::string>& args) {
     if (args.size() == 1) {
         new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
     } else {
-        new_note = Note::LoadFromFile(std::filesystem::current_path() / "templates" / (args[2] + ".md"));
+        new_note = Note::LoadFromFile(notes_directory_ / "templates" / (args[2] + ".md"));
         new_note.filename = filename;
         new_note.title = title;
         new_note.created = std::chrono::system_clock::now();
