@@ -105,7 +105,7 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
     }
 
     if (!std::filesystem::exists(args[0])) {
-        std::cout << "File/directory doesn't exist!" << std::endl;
+        std::cout << "File doesn't exist!" << std::endl;
         return;
     }
 
@@ -152,6 +152,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     NoteManager manager(notes_directory, index);
 
+    if (command == "import") {
+        HandleImportCommand(manager, args);
+        return;
+    }
+
     if (!input_validation_utils::ValidateArgs(args)) {
         std::cout << "Invalid argument(s)." << std::endl;
         return;
@@ -169,8 +174,6 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleSearchCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
-    } else if (command == "import") {
-        HandleImportCommand(manager, args);
     } else if (command == "help") {
             HandleHelpCommand();
     } else {
