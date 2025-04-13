@@ -3,6 +3,7 @@
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
 #include "utils/config_utils.h"
+#include "utils/template_utils.h"
 
 #include <iostream>
 #include <memory>
@@ -121,6 +122,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
     }
 
     config_utils::SetupConfigFile(args);
+    template_utils::SetupTemplateDirectory(args);
 }
 
 void HandleHelpCommand() {
