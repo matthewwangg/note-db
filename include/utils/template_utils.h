@@ -6,6 +6,7 @@
 
 namespace template_utils {
 
+void GenerateDefaultTemplate();
 void SetupTemplateDirectory(const std::vector<std::string>& args);
 
 }
