@@ -11,12 +11,14 @@ void GenerateDefaultTemplate(const std::filesystem::path& default_template) {
     std::ofstream out(default_template);
     if (out.is_open()) {
         out << "# Title" << '\n'
-            << '\n'
-            << "---" << '\n'
-            << '\n'
+            << "This is a short description of what the note is for." << '\n'
+            << " \n"
             << "## Summary" << '\n'
-            << '\n'
-            << "## Notes" << '\n';
+            << "This is a summary of the information in the note." << '\n'
+            << " \n"
+            << "## Notes" << '\n'
+            << " \n"
+            << "- Here is the start of the notes" << '\n';
     }
 }
 
