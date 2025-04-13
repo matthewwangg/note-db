@@ -20,6 +20,7 @@ public:
     void EditNote(const std::vector<std::string>& args);
     void DeleteNote(const std::vector<std::string>& args);
     void SearchNote(const std::vector<std::string>& args);
+    void ImportNote(const std::vector<std::string>& args);
     void TagNote(const std::vector<std::string>& args);
 
 private:
