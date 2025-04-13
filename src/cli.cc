@@ -103,7 +103,13 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         std::cout << "Proper Usage: import <filepath>" << std::endl;
         return;
     }
-    manager.ImportCommand(args);
+
+    if (!std::filesystem::exists(args[0])) {
+        std::cout << "File/directory doesn't exist!" << std::endl;
+        return;
+    }
+
+    manager.ImportNote(args);
 }
 
 void HandleInitCommand(const std::vector<std::string>& args) {

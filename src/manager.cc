@@ -75,6 +75,14 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
     display_utils::PrintNotes(notes);
 }
 
+void NoteManager::ImportNote(const std::vector<std::string>& args) {
+    const std::filesystem::path file_path = args[0];
+    const std::string filename = file_path.filename().string();
+    const std::filesystem::path dest_path = notes_directory_ / filename;
+
+    std::filesystem::copy_file(file_path,dest_path,std::filesystem::copy_options::overwrite_existing);
+}
+
 void NoteManager::TagNote(const std::vector<std::string>& args) {
     const std::string& filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
