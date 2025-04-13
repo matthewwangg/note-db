@@ -9,6 +9,7 @@ namespace config_utils {
 
 std::string LoadNotesDirectory(const std::filesystem::path& root_directory) {
     std::ifstream in(root_directory / ".notedb" / "config.json");
+    
     if (!in) {
         return "";
     }

@@ -17,6 +17,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
         std::cout << "Proper Usage: new <filename>" << std::endl;
         return;
     }
+
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
 
@@ -34,6 +35,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
         std::cout << "Proper Usage: edit <filename>" << std::endl;
         return;
     }
+
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
 
@@ -51,6 +53,7 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
         std::cout << "Proper Usage: delete <filename>" << std::endl;
         return;
     }
+
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
 
@@ -72,6 +75,7 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
         std::cout << "Proper Usage: search <query>" << std::endl;
         return;
     }
+
     manager.SearchNote(args);
 }
 
@@ -81,6 +85,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
         std::cout << "Proper Usage: tag <filename> <tag>" << std::endl;
         return;
     }
+
     std::vector<std::string> normalized_args = args;
     normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
 

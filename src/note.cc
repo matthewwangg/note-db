@@ -16,6 +16,7 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
 
     std::string line;
     bool metadata = false;
+
     while(std::getline(in, line)) {
         if (line == "---") {
             metadata = !metadata;
@@ -47,6 +48,7 @@ Note Note::LoadFromFile(const std::filesystem::path& path) {
                     note.tags.insert(tag);
                     start = end + delimiter.length();
                 }
+
                 std::string final_tag = tags.substr(start);
                 if (!final_tag.empty()) {
                     note.tags.insert(final_tag);

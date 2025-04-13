@@ -42,9 +42,11 @@ std::string NormalizeFilename(const std::string& name) {
     for (char c : name) {
         normalized_filename.push_back(std::tolower(c));
     }
+
     if (name.length() < 3 || name.substr(name.length() - 3) != ".md") {
         normalized_filename += ".md";
     }
+
     return normalized_filename;
 }
 

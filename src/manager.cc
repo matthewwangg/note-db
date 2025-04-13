@@ -10,7 +10,7 @@
 
 NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index)
     : notes_directory_(notes_directory),
-      index_(index)
+      index_(std::move(index))
 {
     editor_ = std::getenv("EDITOR") ? std::getenv("EDITOR") : "nano";
 
@@ -20,16 +20,19 @@ NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<Sea
 }
 
 void NoteManager::CreateNote(const std::vector<std::string>& args) {
-    std::string filename = args[0];
+    const std::string& filename = args[0];
     std::string title = args[0].substr(0, args[0].length() - 3);
+
     Note new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
     new_note.SaveToFile(notes_directory_);
+
     std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
     std::system(command.c_str());
 }
 
 void NoteManager::ListNotes() {
     std::vector<Note> notes;
+
     for(auto const& path : std::filesystem::directory_iterator(notes_directory_)) {
         notes.push_back(Note::LoadFromFile(path));
     }
@@ -38,9 +41,10 @@ void NoteManager::ListNotes() {
 }
 
 void NoteManager::EditNote(const std::vector<std::string>& args) {
-    std::string filename = args[0];
+    const std::string& filename = args[0];
     Note note = Note::LoadFromFile(notes_directory_ / filename);
     note.updated = std::chrono::system_clock::now();
+
     note.SaveToFile(notes_directory_);
 
     std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
@@ -48,7 +52,7 @@ void NoteManager::EditNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::DeleteNote(const std::vector<std::string>& args) {
-    std::string filename = args[0];
+    const std::string& filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 
     if (std::filesystem::exists(file_path)) {
@@ -72,7 +76,7 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args) {
-    std::string filename = args[0];
+    const std::string& filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 
     Note note = Note::LoadFromFile(notes_directory_ / filename);

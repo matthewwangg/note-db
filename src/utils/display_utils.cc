@@ -49,8 +49,10 @@ void PrintCommands() {
               << "  help                     Show this message" << std::endl;
 }
 
-void Debug(std::string debug_message) {
-    std::cout << "[DEBUG]: " << debug_message << std::endl;
+void Debug(std::string debug_message, bool debug) {
+    if (debug) {
+        std::cout << "[DEBUG]: " << debug_message << std::endl;
+    }
 }
 
 }
