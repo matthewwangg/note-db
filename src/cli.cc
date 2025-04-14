@@ -1,72 +1,83 @@
 #include "cli.h"
 #include "index.h"
+#include "utils/command_utils.h"
+#include "utils/config_utils.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
-#include "utils/config_utils.h"
 #include "utils/template_utils.h"
 
 #include <iostream>
 #include <memory>
-#include <vector>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if ((args.size() != 1 && args.size() != 3) || (args.size() == 3 && args[1] != "--template")) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command new!" << std::endl;
         std::cout << "Proper Usage: new <filename> [--template <name>]" << std::endl;
         return;
     }
 
-    std::vector<std::string> normalized_args = args;
-    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
-        std::cout << "File " << normalized_args[0] << " already exists!" << std::endl;
+    if (std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " already exists!" << std::endl;
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.CreateNote(normalized_args);
-    std::cout << "Note " << normalized_args[0] << " successfully created!" << std::endl;
+    std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command edit!" << std::endl;
         std::cout << "Proper Usage: edit <filename>" << std::endl;
         return;
     }
 
-    std::vector<std::string> normalized_args = args;
-    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
-        std::cout << "File " << normalized_args[0] << " doesn't exist yet!" << std::endl;
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.EditNote(normalized_args);
-    std::cout << "Note " << normalized_args[0] << " successfully edited!" << std::endl;
+    std::cout << "Note " << normalized_filename << " successfully edited!" << std::endl;
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command delete!" << std::endl;
         std::cout << "Proper Usage: delete <filename>" << std::endl;
         return;
     }
 
-    std::vector<std::string> normalized_args = args;
-    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
-        std::cout << "File " << normalized_args[0] << " doesn't exist!" << std::endl;
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist!" << std::endl;
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.DeleteNote(normalized_args);
-    std::cout << "Note " << normalized_args[0] << " successfully deleted!" << std::endl;
+    std::cout << "Note " << normalized_filename << " successfully deleted!" << std::endl;
 }
 
 void HandleListCommand(NoteManager& manager) {
@@ -74,36 +85,42 @@ void HandleListCommand(NoteManager& manager) {
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command search!" << std::endl;
         std::cout << "Proper Usage: search <query>" << std::endl;
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.SearchNote(args);
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 2) {
+    if (args.size() < 2) {
         std::cout << "Invalid usage of command tag!" << std::endl;
         std::cout << "Proper Usage: tag <filename> <tag>" << std::endl;
         return;
     }
 
-    std::vector<std::string> normalized_args = args;
-    normalized_args[0] = input_validation_utils::NormalizeFilename(normalized_args[0]);
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_args[0])) {
-        std::cout << "File " << normalized_args[0] << " doesn't exist yet!" << std::endl;
+    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 2, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.TagNote(normalized_args);
-    std::cout << "Note " << normalized_args[0] << " successfully tagged!" << std::endl;
+    std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
 }
 
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command import!" << std::endl;
         std::cout << "Proper Usage: import <filepath>" << std::endl;
         return;
@@ -115,16 +132,22 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
     manager.ImportNote(args);
     std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
 }
 
 void HandleInitCommand(const std::vector<std::string>& args) {
-    if (args.size() != 1) {
+    if (args.empty()) {
         std::cout << "Invalid usage of command init!" << std::endl;
         std::cout << "Proper Usage: init <directory>" << std::endl;
         return;
     }
+
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
     config_utils::SetupConfigFile(args);
     template_utils::SetupTemplateDirectory(args);
