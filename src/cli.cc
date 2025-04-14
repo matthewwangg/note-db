@@ -32,7 +32,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.CreateNote(normalized_args);
+    manager.CreateNote(normalized_args, flag_map);
     std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
 }
 
@@ -54,7 +54,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.EditNote(normalized_args);
+    manager.EditNote(normalized_args, flag_map);
     std::cout << "Note " << normalized_filename << " successfully edited!" << std::endl;
 }
 
@@ -76,7 +76,7 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.DeleteNote(normalized_args);
+    manager.DeleteNote(normalized_args, flag_map);
     std::cout << "Note " << normalized_filename << " successfully deleted!" << std::endl;
 }
 
@@ -94,7 +94,7 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.SearchNote(args);
+    manager.SearchNote(args, flag_map);
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -115,7 +115,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     std::vector<std::string> flags(args.begin() + 2, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.TagNote(normalized_args);
+    manager.TagNote(normalized_args, flag_map);
     std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
 }
 
@@ -135,7 +135,7 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    manager.ImportNote(args);
+    manager.ImportNote(args, flag_map);
     std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
 }
 
@@ -149,8 +149,8 @@ void HandleInitCommand(const std::vector<std::string>& args) {
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
-    config_utils::SetupConfigFile(args);
-    template_utils::SetupTemplateDirectory(args);
+    config_utils::SetupConfigFile(args, flag_map);
+    template_utils::SetupTemplateDirectory(args, flag_map);
     std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
 }
 
