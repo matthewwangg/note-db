@@ -36,7 +36,7 @@ std::string LoadNotesDirectory(const std::filesystem::path& root_directory) {
     return "";
 }
 
-void SetupConfigFile(const std::vector<std::string>& args) {
+void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     std::filesystem::path root_directory = std::filesystem::current_path();
     std::filesystem::path config_dir = root_directory / ".notedb";
     std::filesystem::create_directories(config_dir);

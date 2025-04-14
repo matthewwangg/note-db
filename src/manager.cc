@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index)
@@ -19,19 +20,13 @@ NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<Sea
     }
 }
 
-void NoteManager::CreateNote(const std::vector<std::string>& args) {
+void NoteManager::CreateNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& filename = args[0];
     std::string title = args[0].substr(0, args[0].length() - 3);
 
-    Note new_note;
-    if (args.size() == 1) {
-        new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
-    } else {
-        new_note = Note::LoadFromFile(notes_directory_ / "templates" / (args[2] + ".md"));
-        new_note.filename = filename;
-        new_note.title = title;
-        new_note.created = std::chrono::system_clock::now();
-        new_note.updated = std::chrono::system_clock::now();
+    Note new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
+    if (!flag_map.empty() && flag_map.find("--template") != flag_map.end()) {
+        new_note.content = Note::LoadFromFile(notes_directory_ / "templates" / (flag_map.at("--template") + ".md")).content;
     }
     new_note.SaveToFile(notes_directory_);
 
@@ -49,7 +44,7 @@ void NoteManager::ListNotes() {
     display_utils::PrintNotes(notes);
 }
 
-void NoteManager::EditNote(const std::vector<std::string>& args) {
+void NoteManager::EditNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& filename = args[0];
     Note note = Note::LoadFromFile(notes_directory_ / filename);
     note.updated = std::chrono::system_clock::now();
@@ -60,7 +55,7 @@ void NoteManager::EditNote(const std::vector<std::string>& args) {
     std::system(command.c_str());
 }
 
-void NoteManager::DeleteNote(const std::vector<std::string>& args) {
+void NoteManager::DeleteNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 
@@ -69,7 +64,7 @@ void NoteManager::DeleteNote(const std::vector<std::string>& args) {
     }
 }
 
-void NoteManager::SearchNote(const std::vector<std::string>& args) {
+void NoteManager::SearchNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& search_query = args[0];
     const std::vector<std::string> filenames = index_->Search(search_query);
     std::vector<Note> notes;
@@ -84,7 +79,7 @@ void NoteManager::SearchNote(const std::vector<std::string>& args) {
     display_utils::PrintNotes(notes);
 }
 
-void NoteManager::ImportNote(const std::vector<std::string>& args) {
+void NoteManager::ImportNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::filesystem::path file_path = args[0];
     const std::string filename = file_path.filename().string();
 
@@ -95,7 +90,7 @@ void NoteManager::ImportNote(const std::vector<std::string>& args) {
     note.SaveToFile(notes_directory_);
 }
 
-void NoteManager::TagNote(const std::vector<std::string>& args) {
+void NoteManager::TagNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& filename = args[0];
     std::filesystem::path file_path = notes_directory_ / filename;
 

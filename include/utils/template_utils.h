@@ -3,12 +3,13 @@
 
 #include <filesystem>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace template_utils {
 
 void GenerateDefaultTemplate(const std::filesystem::path& default_template);
-void SetupTemplateDirectory(const std::vector<std::string>& args);
+void SetupTemplateDirectory(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
 
 }
 

@@ -12,6 +12,7 @@ add_executable(note_db
         src/utils/input_validation_utils.cc
         src/index.cc
         src/utils/config_utils.cc
-        src/utils/template_utils.cc)
+        src/utils/template_utils.cc
+        src/utils/command_utils.cc)
 
 target_include_directories(note_db PRIVATE include)
