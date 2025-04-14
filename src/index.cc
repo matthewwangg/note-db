@@ -1,9 +1,11 @@
 #include "index.h"
-#include "note.h"
 
+#include <cctype>
 #include <filesystem>
 #include <string>
 #include <vector>
+
+#include "note.h"
 
 void SearchIndex::BuildIndex(const std::filesystem::path& notes_directory) {
     for (const auto& path : std::filesystem::directory_iterator(notes_directory)) {
@@ -22,7 +24,7 @@ void SearchIndex::IndexNote(const Note& note) {
     }
 }
 
-std::vector<std::string> SearchIndex::Search(const std::string &query) {
+std::vector<std::string> SearchIndex::Search(const std::string& query) {
     std::vector<std::string> processed_query = Tokenize(query);
 
     if (processed_query.empty()) {

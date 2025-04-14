@@ -1,16 +1,18 @@
 #include "cli.h"
+
+#include <filesystem>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 #include "index.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
 #include "utils/template_utils.h"
-
-#include <iostream>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 namespace cli {
 
@@ -24,7 +26,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+    if (std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename)) {
         std::cout << "File " << normalized_filename << " already exists!" << std::endl;
         return;
     }
@@ -46,7 +48,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+    if (!std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename)) {
         std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
         return;
     }
@@ -68,7 +70,7 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+    if (!std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename)) {
         std::cout << "File " << normalized_filename << " doesn't exist!" << std::endl;
         return;
     }
@@ -107,7 +109,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (!std::filesystem::exists(manager.get_notes_directory() / normalized_filename)) {
+    if (!std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename)) {
         std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
         return;
     }

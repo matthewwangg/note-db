@@ -1,6 +1,7 @@
 #include "utils/input_validation_utils.h"
 
 #include <algorithm>
+#include <cctype>
 #include <regex>
 
 namespace input_validation_utils {

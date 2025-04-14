@@ -1,13 +1,13 @@
 #ifndef NOTE_DB_INDEX_H
 #define NOTE_DB_INDEX_H
 
-#include "note.h"
-
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include "note.h"
 
 class SearchIndex {
 public:

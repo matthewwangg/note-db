@@ -1,10 +1,12 @@
 #include "utils/display_utils.h"
-#include "note.h"
 
 #include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "note.h"
 
 namespace display_utils {
 
@@ -49,7 +51,7 @@ void PrintCommands() {
               << "  help                     Show this message" << std::endl;
 }
 
-void Debug(std::string debug_message, bool debug) {
+void Debug(const std::string& debug_message, bool debug) {
     if (debug) {
         std::cout << "[DEBUG]: " << debug_message << std::endl;
     }

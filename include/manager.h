@@ -1,20 +1,21 @@
 #ifndef NOTE_DB_MANAGER_H
 #define NOTE_DB_MANAGER_H
 
-#include <index.h>
-
 #include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include <index.h>
+
+
 class NoteManager {
 public:
     explicit NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index);
     ~NoteManager() = default;
 
-    std::filesystem::path get_notes_directory();
+    std::filesystem::path GetNotesDirectory();
 
     void CreateNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
     void ListNotes();

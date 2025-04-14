@@ -1,10 +1,10 @@
 #ifndef NOTE_DB_CLI_H
 #define NOTE_DB_CLI_H
 
-#include "manager.h"
-
 #include <string>
 #include <vector>
+
+#include "manager.h"
 
 namespace cli {
 

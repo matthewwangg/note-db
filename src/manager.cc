@@ -1,13 +1,15 @@
-#include "index.h"
 #include "manager.h"
-#include "note.h"
-#include "utils/display_utils.h"
 
+#include <chrono>
 #include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "index.h"
+#include "note.h"
+#include "utils/display_utils.h"
 
 NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index)
     : notes_directory_(notes_directory),
@@ -99,7 +101,7 @@ void NoteManager::TagNote(const std::vector<std::string>& args, const std::unord
     note.SaveToFile(notes_directory_);
 }
 
-std::filesystem::path NoteManager::get_notes_directory() {
+std::filesystem::path NoteManager::GetNotesDirectory() {
     return notes_directory_;
 }
 

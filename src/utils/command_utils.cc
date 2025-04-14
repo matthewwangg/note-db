@@ -1,5 +1,9 @@
 #include "utils/command_utils.h"
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 namespace command_utils {
 
 std::unordered_map<std::string, std::string> ParseFlags(const std::vector<std::string>& flags) {

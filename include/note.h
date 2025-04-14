@@ -2,9 +2,9 @@
 #define NOTE_DB_NOTE_H
 
 #include <chrono>
+#include <filesystem>
 #include <string>
 #include <unordered_set>
-#include <filesystem>
 
 struct Note {
     std::string filename;

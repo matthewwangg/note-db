@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 Note Note::LoadFromFile(const std::filesystem::path& path) {
     Note note;
@@ -81,7 +82,7 @@ void Note::SaveToFile(const std::filesystem::path& path) const {
     out << "updated: " << updated_day << std::endl;
     out << "tags: [";
     bool first = true;
-    for (const std::string &tag: tags) {
+    for (const std::string& tag: tags) {
         if (!first) {
             out << ", ";
         }
