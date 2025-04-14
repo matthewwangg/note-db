@@ -24,15 +24,9 @@ void NoteManager::CreateNote(const std::vector<std::string>& args, const std::un
     const std::string& filename = args[0];
     std::string title = args[0].substr(0, args[0].length() - 3);
 
-    Note new_note;
-    if (flag_map.empty()) {
-        new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
-    } else if (flag_map.find("--template") != flag_map.end()) {
-        new_note = Note::LoadFromFile(notes_directory_ / "templates" / (flag_map.at("--template") + ".md"));
-        new_note.filename = filename;
-        new_note.title = title;
-        new_note.created = std::chrono::system_clock::now();
-        new_note.updated = std::chrono::system_clock::now();
+    Note new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
+    if (!flag_map.empty() && flag_map.find("--template") != flag_map.end()) {
+        new_note.content = Note::LoadFromFile(notes_directory_ / "templates" / (flag_map.at("--template") + ".md")).content;
     }
     new_note.SaveToFile(notes_directory_);
 
