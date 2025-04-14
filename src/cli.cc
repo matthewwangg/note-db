@@ -28,6 +28,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     }
 
     manager.CreateNote(normalized_args);
+    std::cout << "Note " << normalized_args[0] << " successfully created!" << std::endl;
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -46,6 +47,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     }
 
     manager.EditNote(normalized_args);
+    std::cout << "Note " << normalized_args[0] << " successfully edited!" << std::endl;
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -64,6 +66,7 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     }
 
     manager.DeleteNote(normalized_args);
+    std::cout << "Note " << normalized_args[0] << " successfully deleted!" << std::endl;
 }
 
 void HandleListCommand(NoteManager& manager) {
@@ -96,6 +99,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     }
 
     manager.TagNote(normalized_args);
+    std::cout << "Note " << normalized_args[0] << " successfully tagged!" << std::endl;
 }
 
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -112,6 +116,7 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
     }
 
     manager.ImportNote(args);
+    std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
 }
 
 void HandleInitCommand(const std::vector<std::string>& args) {
@@ -123,6 +128,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
 
     config_utils::SetupConfigFile(args);
     template_utils::SetupTemplateDirectory(args);
+    std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
 }
 
 void HandleHelpCommand() {
@@ -178,7 +184,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
     } else if (command == "help") {
-            HandleHelpCommand();
+        HandleHelpCommand();
     } else {
         std::cout << "Unsupported command: " << command << "\n";
         HandleHelpCommand();
