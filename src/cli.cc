@@ -182,7 +182,6 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     }
 
     std::shared_ptr<SearchIndex> index = std::make_shared<SearchIndex>();
-    index->BuildIndex(notes_directory);
 
     NoteManager manager(notes_directory, index);
 
@@ -205,6 +204,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "list") {
         HandleListCommand(manager);
     } else if (command == "search") {
+        index->BuildIndex(notes_directory);
         HandleSearchCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
