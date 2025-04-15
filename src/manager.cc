@@ -10,6 +10,7 @@
 #include "index.h"
 #include "note.h"
 #include "utils/display_utils.h"
+#include "utils/search_utils.h"
 
 NoteManager::NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index)
     : notes_directory_(notes_directory),
@@ -69,13 +70,22 @@ void NoteManager::DeleteNote(const std::vector<std::string>& args, const std::un
 void NoteManager::SearchNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     const std::string& search_query = args[0];
     const std::vector<std::string> filenames = index_->Search(search_query);
+    std::string tag_filter = search_utils::GetTagFilter(flag_map);
+    int result_limit = search_utils::GetLimitFilter(flag_map);
+    std::string sort_by = search_utils::GetSortBy(flag_map);
+
     std::vector<Note> notes;
 
     for (const auto& path : std::filesystem::directory_iterator(notes_directory_)) {
         Note note = Note::LoadFromFile(path);
-        if (std::find(filenames.begin(), filenames.end(), note.filename) != filenames.end()) {
+        bool note_exists = std::find(filenames.begin(), filenames.end(), note.filename) != filenames.end();
+        if (note_exists && search_utils::MatchesTagFilter(note, tag_filter) && notes.size() < result_limit) {
             notes.push_back(note);
         }
+    }
+
+    if (!sort_by.empty()) {
+        search_utils::SortNotes(notes, sort_by);
     }
 
     display_utils::PrintNotes(notes);
