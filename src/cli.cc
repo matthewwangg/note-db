@@ -89,7 +89,7 @@ void HandleListCommand(NoteManager& manager) {
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty()) {
         std::cout << "Invalid usage of command search!" << std::endl;
-        std::cout << "Proper Usage: search <query>" << std::endl;
+        std::cout << "Proper Usage: search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
         return;
     }
 
