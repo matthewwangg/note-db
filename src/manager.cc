@@ -72,6 +72,7 @@ void NoteManager::SearchNote(const std::vector<std::string>& args, const std::un
     const std::vector<std::string> filenames = index_->Search(search_query);
     std::string tag_filter = search_utils::GetTagFilter(flag_map);
     int result_limit = search_utils::GetLimitFilter(flag_map);
+    std::string sort_by = search_utils::GetSortBy(flag_map);
 
     std::vector<Note> notes;
 
@@ -81,6 +82,10 @@ void NoteManager::SearchNote(const std::vector<std::string>& args, const std::un
         if (note_exists && search_utils::MatchesTagFilter(note, tag_filter) && notes.size() < result_limit) {
             notes.push_back(note);
         }
+    }
+
+    if (!sort_by.empty()) {
+        search_utils::SortNotes(notes, sort_by);
     }
 
     display_utils::PrintNotes(notes);
