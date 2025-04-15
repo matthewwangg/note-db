@@ -8,7 +8,8 @@
 
 namespace config_utils {
 
-std::string LoadNotesDirectory(const std::filesystem::path& root_directory);
+std::filesystem::path GetHomeDirectory();
+std::string LoadNotesDirectory();
 void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
 
 }

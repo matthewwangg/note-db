@@ -174,7 +174,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
-    std::string notes_directory = config_utils::LoadNotesDirectory(std::filesystem::current_path());
+    std::string notes_directory = config_utils::LoadNotesDirectory();
     if (notes_directory.empty()) {
         std::cout << "Missing or invalid .notedb/config.json in current directory!" << std::endl;
         std::cout << "Try running init <directory> to target where your note files are" << std::endl;

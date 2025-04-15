@@ -7,8 +7,19 @@
 
 namespace config_utils {
 
-std::string LoadNotesDirectory(const std::filesystem::path& root_directory) {
-    std::ifstream in(root_directory / ".notedb" / "config.json");
+std::filesystem::path GetHomeDirectory() {
+#ifdef _WIN32
+    const char* home = std::getenv("USERPROFILE");
+#else
+    const char* home = std::getenv("HOME");
+#endif
+
+    return {home};
+}
+
+std::string LoadNotesDirectory() {
+    std::filesystem::path home_directory = GetHomeDirectory();
+    std::ifstream in(home_directory / ".notedb" / "config.json");
     
     if (!in) {
         return "";
@@ -37,8 +48,8 @@ std::string LoadNotesDirectory(const std::filesystem::path& root_directory) {
 }
 
 void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
-    std::filesystem::path root_directory = std::filesystem::current_path();
-    std::filesystem::path config_dir = root_directory / ".notedb";
+    std::filesystem::path home_directory = GetHomeDirectory();
+    std::filesystem::path config_dir = home_directory / ".notedb";
     std::filesystem::create_directories(config_dir);
 
     std::ofstream out(config_dir / "config.json");
