@@ -6,9 +6,10 @@
 #include "snapshot_entry.h"
 
 class Snapshot {
+public:
     explicit Snapshot(const std::filesystem::path& root);
 
-    void Generate();
+    void Generate(const std::filesystem::path& notes_directory);
     void SaveToFile() const;
     void LoadFromFile(const std::filesystem::path& path);
 

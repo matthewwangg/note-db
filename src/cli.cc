@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "index.h"
+#include "snapshot.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
@@ -98,6 +99,18 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
     manager.SearchNote(args, flag_map);
+}
+
+void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (!args.empty()) {
+        std::cout << "Invalid usage of command snapshot!" << std::endl;
+        std::cout << "Proper Usage: snapshot" << std::endl;
+        return;
+    }
+
+    Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
+    snapshot.Generate(manager.GetNotesDirectory());
+    snapshot.SaveToFile();
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -208,6 +221,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "search") {
         index->BuildIndex(notes_directory);
         HandleSearchCommand(manager, args);
+    } else if (command == "snapshot") {
+        HandleSnapshotCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
     } else if (command == "help") {

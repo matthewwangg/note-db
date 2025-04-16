@@ -9,7 +9,7 @@ namespace snapshot_utils {
 
 void SetupSnapshotDirectory(const std::vector<std::string> &args, const std::unordered_map<std::string, std::string> &flag_map) {
     std::filesystem::path notes_dir = args[0];
-    std::filesystem::path template_dir = notes_dir / "templates";
+    std::filesystem::path template_dir = notes_dir / "snapshots";
     std::filesystem::create_directories(template_dir);
 }
 

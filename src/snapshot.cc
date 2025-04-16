@@ -12,12 +12,12 @@ Snapshot::Snapshot(const std::filesystem::path& root)
 
 }
 
-void Snapshot::Generate() {
+void Snapshot::Generate(const std::filesystem::path& notes_directory) {
     entries_.clear();
 
-    for (const auto& path: std::filesystem::recursive_directory_iterator(root_)) {
+    for (const auto& path: std::filesystem::recursive_directory_iterator(notes_directory)) {
         if (path.is_regular_file()) {
-            std::filesystem::path relative_path = std::filesystem::relative(path.path(), root_);
+            std::filesystem::path relative_path = std::filesystem::relative(path.path(), notes_directory);
             Note note = Note::LoadFromFile(path.path());
 
             SnapshotEntry entry = SnapshotEntry::SnapshotFromNote(note, relative_path);
@@ -26,7 +26,7 @@ void Snapshot::Generate() {
         }
     }
 }
-
+#include <iostream>
 void Snapshot::SaveToFile() const {
     time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::string filename = std::to_string(current_time) + ".snap";
