@@ -9,7 +9,7 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 echo "[+] Running CMake..."
-cmake ..
+cmake .. -DBUILD_TESTING=OFF
 
 echo "[+] Building the project..."
 make -j$(nproc)
