@@ -26,19 +26,31 @@ void Snapshot::Generate(const std::filesystem::path& notes_directory) {
         }
     }
 }
-#include <iostream>
+
 void Snapshot::SaveToFile() const {
     time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::string filename = std::to_string(current_time) + ".snap";
+    std::string filename = std::to_string(current_time) + ".json";
 
     std::ofstream out(root_ / filename);
 
-    for (SnapshotEntry entry : entries_) {
-        out << entry.relative_path << '\t'
-            << entry.hash << '\t'
-            << std::chrono::system_clock::to_time_t(entry.modified)
-            << '\n';
+    out << "[\n";
+
+    for (size_t i = 0; i < entries_.size(); ++i) {
+        const auto& entry = entries_[i];
+
+        out << "  {\n";
+        out << "    \"path\": \"" << entry.relative_path << "\",\n";
+        out << "    \"hash\": \"" << entry.hash << "\",\n";
+        out << "    \"modified\": " << std::chrono::system_clock::to_time_t(entry.modified) << '\n';
+        out << "  }";
+
+        if (i + 1 < entries_.size()) {
+            out << ",";
+        }
+        out << "\n";
     }
+
+    out << "]\n";
 }
 
 void Snapshot::LoadFromFile(const std::filesystem::path& path) {
