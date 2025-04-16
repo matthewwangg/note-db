@@ -12,6 +12,7 @@
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
+#include "utils/snapshot_utils.h"
 #include "utils/template_utils.h"
 
 namespace cli {
@@ -153,6 +154,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
 
     config_utils::SetupConfigFile(args, flag_map);
     template_utils::SetupTemplateDirectory(args, flag_map);
+    snapshot_utils::SetupSnapshotDirectory(args, flag_map);
     std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
 }
 
