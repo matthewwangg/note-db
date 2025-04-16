@@ -8,10 +8,12 @@
 #include <vector>
 
 #include "index.h"
+#include "snapshot.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
 #include "utils/input_validation_utils.h"
+#include "utils/snapshot_utils.h"
 #include "utils/template_utils.h"
 
 namespace cli {
@@ -99,6 +101,18 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
     manager.SearchNote(args, flag_map);
 }
 
+void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (!args.empty()) {
+        std::cout << "Invalid usage of command snapshot!" << std::endl;
+        std::cout << "Proper Usage: snapshot" << std::endl;
+        return;
+    }
+
+    Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
+    snapshot.Generate(manager.GetNotesDirectory());
+    snapshot.SaveToFile();
+}
+
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         std::cout << "Invalid usage of command tag!" << std::endl;
@@ -153,6 +167,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
 
     config_utils::SetupConfigFile(args, flag_map);
     template_utils::SetupTemplateDirectory(args, flag_map);
+    snapshot_utils::SetupSnapshotDirectory(args, flag_map);
     std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
 }
 
@@ -206,6 +221,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "search") {
         index->BuildIndex(notes_directory);
         HandleSearchCommand(manager, args);
+    } else if (command == "snapshot") {
+        HandleSnapshotCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
     } else if (command == "help") {

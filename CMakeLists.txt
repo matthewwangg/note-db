@@ -14,6 +14,9 @@ add_executable(note_db
         src/utils/config_utils.cc
         src/utils/template_utils.cc
         src/utils/command_utils.cc
-        src/utils/search_utils.cc)
+        src/utils/search_utils.cc
+        src/snapshot.cc
+        src/snapshot_entry.cc
+        src/utils/snapshot_utils.cc)
 
 target_include_directories(note_db PRIVATE include)
