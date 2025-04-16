@@ -23,6 +23,21 @@ uint64_t FNV1a(const std::string& content) {
     return hash;
 }
 
+std::string ExtractValue(const std::string& json, const std::string& key) {
+    size_t key_pos = json.find('\"' + key + '\"');
+    if (key_pos == std::string::npos) return "";
+
+    size_t colon = json.find(':', key_pos);
+    size_t start = json.find_first_not_of(" \t\n\r", colon + 1);
+
+    if (json[start] == '"') {
+        size_t end = json.find('"', start + 1);
+        return json.substr(start + 1, end - start - 1);
+    } else {
+        size_t end = json.find_first_of(",}", start);
+        return json.substr(start, end - start);
+    }
+}
 
 }
 

@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "utils/snapshot_utils.h"
+
 
 Snapshot::Snapshot(const std::filesystem::path& root)
     : root_(root)
@@ -41,7 +43,7 @@ void Snapshot::SaveToFile() const {
         const auto& entry = entries_[i];
 
         out << "  {\n";
-        out << "    \"path\": \"" << entry.relative_path << "\",\n";
+        out << "    \"relative_path\": \"" << entry.relative_path << "\",\n";
         out << "    \"hash\": \"" << entry.hash << "\",\n";
         out << "    \"modified\": " << std::chrono::system_clock::to_time_t(entry.modified) << '\n';
         out << "  }";
@@ -59,16 +61,28 @@ void Snapshot::LoadFromFile(const std::filesystem::path& path) {
     entries_.clear();
     std::ifstream in(path);
 
-    std::string relative_path, hash;
-    std::time_t modified;
-    while (in >> relative_path >> hash >> modified) {
-        entries_.push_back(SnapshotEntry{
-                .relative_path = relative_path,
-                .hash = hash,
-                .modified = std::chrono::system_clock::from_time_t(modified)
-        });
+    std::string json((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+    size_t pos = 0;
+
+    while ((pos = json.find('{', pos)) != std::string::npos) {
+        size_t obj_end = json.find('}', pos);
+
+        if (obj_end == std::string::npos) {
+            break;
+        }
+
+        std::string obj = json.substr(pos, obj_end - pos + 1);
+
+        SnapshotEntry entry;
+        entry.relative_path = snapshot_utils::ExtractValue(obj, "relative_path");
+        entry.hash = snapshot_utils::ExtractValue(obj, "hash");
+        entry.modified = std::chrono::system_clock::from_time_t(std::stoll(snapshot_utils::ExtractValue(obj, "modified")));
+
+        entries_.push_back(std::move(entry));
+        pos = obj_end + 1;
     }
 }
+
 
 void Snapshot::Diff(const Snapshot& previous_snapshot) const {
     std::unordered_map<std::string, std::string> current_map;
