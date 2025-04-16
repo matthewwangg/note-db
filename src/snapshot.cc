@@ -20,7 +20,7 @@ void Snapshot::Generate(const std::filesystem::path& notes_directory) {
     entries_.clear();
 
     for (const auto& path: std::filesystem::recursive_directory_iterator(notes_directory)) {
-        if (path.is_regular_file()) {
+        if (path.is_regular_file() && path.path().extension().string() == ".md") {
             std::filesystem::path relative_path = std::filesystem::relative(path.path(), notes_directory);
             Note note = Note::LoadFromFile(path.path());
 
@@ -94,6 +94,10 @@ void Snapshot::Diff(const Snapshot& previous_snapshot) const {
 
     for (const auto& entry : previous_snapshot.entries_) {
         prev_map[entry.relative_path] = entry.hash;
+    }
+
+    if (current_map == prev_map) {
+        std::cout << "No difference found between this snapshot and your current notes!" << std::endl;
     }
 
     for (const auto& [path, hash] : current_map) {
