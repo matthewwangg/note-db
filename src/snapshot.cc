@@ -3,7 +3,9 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <string>
+#include <unordered_map>
 
 
 Snapshot::Snapshot(const std::filesystem::path& root)
@@ -67,3 +69,32 @@ void Snapshot::LoadFromFile(const std::filesystem::path& path) {
         });
     }
 }
+
+void Snapshot::Diff(const Snapshot& previous_snapshot) const {
+    std::unordered_map<std::string, std::string> current_map;
+    std::unordered_map<std::string, std::string> prev_map;
+
+    for (const auto& entry : entries_) {
+        current_map[entry.relative_path] = entry.hash;
+    }
+
+    for (const auto& entry : previous_snapshot.entries_) {
+        prev_map[entry.relative_path] = entry.hash;
+    }
+
+    for (const auto& [path, hash] : current_map) {
+        auto it = prev_map.find(path);
+        if (it == prev_map.end()) {
+            std::cout << "[ADDED]    " << path << '\n';
+        } else if (it->second != hash) {
+            std::cout << "[MODIFIED] " << path << '\n';
+        }
+    }
+
+    for (const auto& [path, _] : prev_map) {
+        if (current_map.find(path) == current_map.end()) {
+            std::cout << "[REMOVED]  " << path << '\n';
+        }
+    }
+}
+

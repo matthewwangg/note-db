@@ -12,6 +12,7 @@ public:
     void Generate(const std::filesystem::path& notes_directory);
     void SaveToFile() const;
     void LoadFromFile(const std::filesystem::path& path);
+    void Diff(const Snapshot& other) const;
 
 private:
     std::filesystem::path root_;
