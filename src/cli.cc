@@ -111,6 +111,7 @@ void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
     Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
     snapshot.Generate(manager.GetNotesDirectory());
     snapshot.SaveToFile();
+    std::cout << "Snapshot successfully saved!" << std::endl;
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -191,8 +192,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     std::string notes_directory = config_utils::LoadNotesDirectory();
     if (notes_directory.empty()) {
-        std::cout << "Missing or invalid .notedb/config.json in current directory!" << std::endl;
-        std::cout << "Try running init <directory> to target where your note files are" << std::endl;
+        std::cout << "Missing or invalid .notedb/config.json in home directory!" << std::endl;
+        std::cout << "Try running init <directory> to indicate where your note files are" << std::endl;
         return;
     }
 
