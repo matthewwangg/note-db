@@ -114,6 +114,22 @@ void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
     std::cout << "Snapshot successfully saved!" << std::endl;
 }
 
+void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Invalid usage of command diff!" << std::endl;
+        std::cout << "Proper Usage: diff <snapshot>" << std::endl;
+        return;
+    }
+
+    Snapshot current_snapshot(manager.GetNotesDirectory() / "snapshots");
+    current_snapshot.Generate(manager.GetNotesDirectory());
+
+    Snapshot previous_snapshot(manager.GetNotesDirectory() / "snapshots");
+    previous_snapshot.LoadFromFile(manager.GetNotesDirectory() / "snapshots" / args[0]);
+
+    current_snapshot.Diff(previous_snapshot);
+}
+
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         std::cout << "Invalid usage of command tag!" << std::endl;
@@ -224,6 +240,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleSearchCommand(manager, args);
     } else if (command == "snapshot") {
         HandleSnapshotCommand(manager, args);
+    } else if (command == "diff") {
+        HandleDiffCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
     } else if (command == "help") {
