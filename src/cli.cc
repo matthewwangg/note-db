@@ -21,20 +21,22 @@ namespace cli {
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty()) {
         std::cout << "Invalid usage of command new!" << std::endl;
-        std::cout << "Proper Usage: new <filename> [--template <name>]" << std::endl;
+        std::cout << "Proper Usage: new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>]" << std::endl;
         return;
     }
 
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    if (std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename)) {
+    std::vector<std::string> flags(args.begin() + 1, args.end());
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
+    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
+
+    if (std::filesystem::exists(manager.GetNotesDirectory() / normalized_filename) && !overwrite) {
         std::cout << "File " << normalized_filename << " already exists!" << std::endl;
         return;
     }
-
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
 
     manager.CreateNote(normalized_args, flag_map);
     std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
@@ -43,7 +45,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty()) {
         std::cout << "Invalid usage of command edit!" << std::endl;
-        std::cout << "Proper Usage: edit <filename>" << std::endl;
+        std::cout << "Proper Usage: edit <filename> [--editor <editor>]" << std::endl;
         return;
     }
 
@@ -155,7 +157,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty()) {
         std::cout << "Invalid usage of command import!" << std::endl;
-        std::cout << "Proper Usage: import <filepath>" << std::endl;
+        std::cout << "Proper Usage: import <filepath> [--overwrite <true/false>]" << std::endl;
         return;
     }
 
@@ -167,6 +169,14 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
 
     std::vector<std::string> flags(args.begin() + 1, args.end());
     std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+
+    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
+    std::filesystem::path destination = manager.GetNotesDirectory() / file_path.filename();
+
+    if (std::filesystem::exists(destination) && !overwrite) {
+        std::cout << "File " << file_path << " exists already in notes directory!" << std::endl;
+        return;
+    }
 
     manager.ImportNote(args, flag_map);
     std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
