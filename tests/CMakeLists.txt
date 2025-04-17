@@ -9,10 +9,14 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(note_db_tests
-
+            cli_test.cc
 )
 
-target_include_directories(note_db_tests PRIVATE ../include)
+target_include_directories(note_db_tests
+        PRIVATE
+        ${gtest_SOURCE_DIR}/include
+        ../include
+)
 
 target_link_libraries(note_db_tests
         PRIVATE
