@@ -1,5 +1,6 @@
 #include "utils/command_utils.h"
 
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -14,6 +15,14 @@ std::unordered_map<std::string, std::string> ParseFlags(const std::vector<std::s
     }
 
     return flag_map;
+}
+
+std::filesystem::path ResolveDirectory(const std::filesystem::path& path, const std::unordered_map<std::string, std::string>& flag_map) {
+    auto it = flag_map.find("--directory");
+    if (it != flag_map.end()) {
+        return path / it->second;
+    }
+    return path;
 }
 
 }
