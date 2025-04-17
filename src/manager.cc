@@ -33,6 +33,14 @@ void NoteManager::CreateNote(const std::vector<std::string>& args, const std::un
     }
     new_note.SaveToFile(notes_directory_);
 
+    if (flag_map.count("--editor") && flag_map.at("--editor") == "none") {
+        return;
+    }
+
+    if (flag_map.count("--editor")) {
+        editor_ = flag_map.at("--editor");
+    }
+
     std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
     std::system(command.c_str());
 }
@@ -53,6 +61,14 @@ void NoteManager::EditNote(const std::vector<std::string>& args, const std::unor
     note.updated = std::chrono::system_clock::now();
 
     note.SaveToFile(notes_directory_);
+
+    if (flag_map.count("--editor") && flag_map.at("--editor") == "none") {
+        return;
+    }
+
+    if (flag_map.count("--editor")) {
+        editor_ = flag_map.at("--editor");
+    }
 
     std::string command = editor_ + " " + notes_directory_.string() + "/" + filename;
     std::system(command.c_str());
