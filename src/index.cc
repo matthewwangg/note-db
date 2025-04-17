@@ -8,7 +8,10 @@
 #include "note.h"
 
 void SearchIndex::BuildIndex(const std::filesystem::path& notes_directory) {
-    for (const auto& path : std::filesystem::directory_iterator(notes_directory)) {
+    for (const auto& path : std::filesystem::recursive_directory_iterator(notes_directory)) {
+        if (!path.is_regular_file() || path.path().extension().string() != ".md") {
+            continue;
+        }
         Note note = Note::LoadFromFile(path);
         IndexNote(note);
     }

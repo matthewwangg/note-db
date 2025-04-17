@@ -48,7 +48,10 @@ void NoteManager::CreateNote(const std::vector<std::string>& args, const std::un
 void NoteManager::ListNotes() {
     std::vector<Note> notes;
 
-    for(auto const& path : std::filesystem::directory_iterator(notes_directory_)) {
+    for(auto const& path : std::filesystem::recursive_directory_iterator(notes_directory_)) {
+        if (!path.is_regular_file() || path.path().extension().string() != ".md") {
+            continue;
+        }
         notes.push_back(Note::LoadFromFile(path));
     }
 
@@ -92,7 +95,10 @@ void NoteManager::SearchNote(const std::vector<std::string>& args, const std::un
 
     std::vector<Note> notes;
 
-    for (const auto& path : std::filesystem::directory_iterator(notes_directory_)) {
+    for (const auto& path : std::filesystem::recursive_directory_iterator(notes_directory_)) {
+        if (!path.is_regular_file() || path.path().extension().string() != ".md") {
+            continue;
+        }
         Note note = Note::LoadFromFile(path);
         bool note_exists = std::find(filenames.begin(), filenames.end(), note.filename) != filenames.end();
         if (note_exists && search_utils::MatchesTagFilter(note, tag_filter) && notes.size() < result_limit) {
