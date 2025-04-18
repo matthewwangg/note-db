@@ -1,1 +1,178 @@
 # note-db
+
+A C++ high-performance local knowledge base for managing Markdown notes with full-text search, tagging, snapshots, and more — all from your terminal.
+
+---
+
+## 🧰 Features
+
+- `init <directory>`: Initialize a notes directory with config, templates, and snapshot structure.
+- `new <filename>`: Create a new note with optional flags (`--template`, `--editor`, `--overwrite`, `--directory`).
+- `edit <filename>`: Open a note in your editor and update its metadata (`--editor`, `--directory`).
+- `delete <filename>`: Delete a note (`--directory`).
+- `list`: Show all notes.
+- `search <query>`: Full-text search with filters (`--tag`, `--limit`, `--sort-by`).
+- `tag <filename> <tag>`: Add a tag to a note (`--directory`).
+- `import <filepath>`: Import a Markdown file from elsewhere (`--overwrite`, `--directory`).
+- `snapshot`: Save a snapshot of current note states.
+- `diff <snapshot>`: Compare current notes to a previous snapshot.
+- `help` / `--help`: Display usage guide.
+- `--version`: Display the current version.
+
+---
+
+## 🛠 Installation
+
+### Build from source
+
+```bash
+git clone https://github.com/matthewwangg/note-db.git
+cd note-db
+./build.sh
+```
+
+This script will:
+- Create the build directory
+- Run CMake with testing disabled
+- Build the project using all available cores
+- Optionally install the `note-db` binary to `/usr/local/bin` (if `make` succeeds)
+
+> 🔧 Requires: CMake 3.27+, a C++20-compatible compiler (e.g., GCC 11+ or Clang 13+)
+
+---
+
+## 🧪 Usage
+
+Initialize your notes vault:
+
+```bash
+note-db init ~/vault
+```
+
+Create a new note:
+
+```bash
+note-db new my-note.md --template default --editor vim
+```
+
+Edit a note:
+
+```bash
+note-db edit my-note.md --editor nano
+```
+
+Delete a note:
+
+```bash
+note-db delete my-note.md
+```
+
+Tag a note:
+
+```bash
+note-db tag my-note.md c++
+```
+
+Import an existing file:
+
+```bash
+note-db import ~/Downloads/lecture.md --overwrite true
+```
+
+Search notes:
+
+```bash
+note-db search algorithms --tag graph --limit 10 --sort-by updated
+```
+
+Snapshot notes:
+
+```bash
+note-db snapshot
+```
+
+Diff with a previous snapshot:
+
+```bash
+note-db diff 1713418010.json
+```
+
+Display help:
+
+```bash
+note-db help
+note-db --help
+```
+
+Check version:
+
+```bash
+note-db --version
+```
+
+> 💡 You can also set the environment variable `NOTEDB_EDITOR` to change the default editor (defaults to `nano`):
+
+```bash
+export NOTEDB_EDITOR=vim
+```
+
+---
+
+## ⚙️ Configuration
+
+note-db stores your config at:
+
+```plaintext
+~/.notedb/config.json
+```
+
+Example contents:
+
+```json
+{
+  "root": "/absolute/path/to/your/notes"
+}
+```
+
+---
+
+## 📁 Notes Structure
+
+```
+vault/
+├── my-note.md
+├── templates/
+│   └── default.md
+├── snapshots/
+│   └── 1713418010.json
+```
+
+Each note is a Markdown file with frontmatter:
+
+```markdown
+---
+title: My Note
+created: 2025-04-17
+updated: 2025-04-17
+tags: [c++, cli]
+---
+This is the content of the note.
+```
+
+---
+
+## 📦 Roadmap
+
+- [ ] Semantic search (e.g., embedding-based)
+- [ ] Archive/restore notes
+
+---
+
+## 🧠 Philosophy
+
+note-db is designed to be keyboard-first and scriptable — for developers who live in the terminal.
+
+---
+
+## 🪪 License
+MIT © 2025 Matthew Wang
