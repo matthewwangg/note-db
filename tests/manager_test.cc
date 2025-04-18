@@ -8,7 +8,7 @@
 #include "note.h"
 #include "utils/config_utils.h"
 
-class CliTest : public ::testing::Test {
+class ManagerTest : public ::testing::Test {
 protected:
     void SetUp() override;
     void TearDown() override;
@@ -17,7 +17,7 @@ protected:
     std::filesystem::path test_directory_;
 };
 
-void CliTest::SetUp() {
+void ManagerTest::SetUp() {
     saved_notes_directory_ = config_utils::LoadNotesDirectory();
     test_directory_ = std::filesystem::current_path() / ".." / "tests" / "temp";
     std::filesystem::remove_all(test_directory_);
@@ -25,12 +25,12 @@ void CliTest::SetUp() {
     cli::DispatchCommand({"init", test_directory_.string()});
 }
 
-void CliTest::TearDown() {
+void ManagerTest::TearDown() {
     std::filesystem::remove_all(test_directory_);
     config_utils::SetupConfigFile({saved_notes_directory_}, {});
 }
 
-TEST_F(CliTest, NewCommandCreatesFile) {
+TEST_F(ManagerTest, NewCommandCreatesFile) {
     std::string filename = "test_create.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
@@ -41,7 +41,7 @@ TEST_F(CliTest, NewCommandCreatesFile) {
     EXPECT_TRUE(std::filesystem::exists(expected_path));
 }
 
-TEST_F(CliTest, EditCommandUpdatesFile) {
+TEST_F(ManagerTest, EditCommandUpdatesFile) {
     std::string filename = "test_edit.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
@@ -58,7 +58,7 @@ TEST_F(CliTest, EditCommandUpdatesFile) {
     EXPECT_GT(new_write_time, original_write_time);
 }
 
-TEST_F(CliTest, DeleteCommandRemovesFile) {
+TEST_F(ManagerTest, DeleteCommandRemovesFile) {
     std::string filename = "test_delete.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
@@ -70,3 +70,20 @@ TEST_F(CliTest, DeleteCommandRemovesFile) {
 
     EXPECT_FALSE(std::filesystem::exists(expected_path));
 }
+
+TEST_F(ManagerTest, TagCommandTagsFile) {
+    std::string filename = "test_tag.md";
+    std::filesystem::path expected_path = test_directory_ / filename;
+
+    cli::DispatchCommand({"new", filename, "--editor", "none"});
+
+    ASSERT_TRUE(std::filesystem::exists(expected_path));
+
+    cli::DispatchCommand({"tag", filename, "tag1"});
+
+    Note note = Note::LoadFromFile(expected_path);
+
+    EXPECT_NE(note.tags.find("tag1"), note.tags.end());
+}
+
+
