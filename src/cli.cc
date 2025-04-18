@@ -19,7 +19,7 @@
 namespace cli {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command new!" << std::endl;
         std::cout << "Proper Usage: new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
         return;
@@ -44,7 +44,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
 }
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command edit!" << std::endl;
         std::cout << "Proper Usage: edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
         return;
@@ -68,7 +68,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command delete!" << std::endl;
         std::cout << "Proper Usage: delete <filename> [--directory <folder>]" << std::endl;
         return;
@@ -95,7 +95,7 @@ void HandleListCommand(NoteManager& manager) {
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command search!" << std::endl;
         std::cout << "Proper Usage: search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
         return;
@@ -121,7 +121,7 @@ void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
 }
 
 void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command diff!" << std::endl;
         std::cout << "Proper Usage: diff <snapshot>" << std::endl;
         return;
@@ -137,7 +137,7 @@ void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() < 2) {
+    if (args.size() < 2 || !command_utils::ValidateArgs(args, 2)) {
         std::cout << "Invalid usage of command tag!" << std::endl;
         std::cout << "Proper Usage: tag <filename> <tag> [--directory <folder>]" << std::endl;
         return;
@@ -160,7 +160,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
 }
 
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command import!" << std::endl;
         std::cout << "Proper Usage: import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
         return;
@@ -188,7 +188,7 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
 }
 
 void HandleInitCommand(const std::vector<std::string>& args) {
-    if (args.empty()) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command init!" << std::endl;
         std::cout << "Proper Usage: init <directory>" << std::endl;
         return;

@@ -25,4 +25,13 @@ std::filesystem::path ResolveDirectory(const std::filesystem::path& path, const 
     return path;
 }
 
+bool ValidateArgs(const std::vector<std::string>& args, int required) {
+    for (int i = 0; i < required; i++) {
+        if (args[i].starts_with("--")) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }
