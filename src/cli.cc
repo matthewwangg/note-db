@@ -21,7 +21,7 @@ namespace cli {
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command new!" << std::endl;
-        std::cout << "Proper Usage: new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        std::cout << "Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
         return;
     }
 
@@ -46,7 +46,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command edit!" << std::endl;
-        std::cout << "Proper Usage: edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
+        std::cout << "Proper Usage: note-db edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
         return;
     }
 
@@ -70,7 +70,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command delete!" << std::endl;
-        std::cout << "Proper Usage: delete <filename> [--directory <folder>]" << std::endl;
+        std::cout << "Proper Usage: note-db delete <filename> [--directory <folder>]" << std::endl;
         return;
     }
 
@@ -97,7 +97,7 @@ void HandleListCommand(NoteManager& manager) {
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command search!" << std::endl;
-        std::cout << "Proper Usage: search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
+        std::cout << "Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
         return;
     }
 
@@ -110,7 +110,7 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
 void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (!args.empty()) {
         std::cout << "Invalid usage of command snapshot!" << std::endl;
-        std::cout << "Proper Usage: snapshot" << std::endl;
+        std::cout << "Proper Usage: note-db snapshot" << std::endl;
         return;
     }
 
@@ -123,7 +123,7 @@ void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
 void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command diff!" << std::endl;
-        std::cout << "Proper Usage: diff <snapshot>" << std::endl;
+        std::cout << "Proper Usage: note-db diff <snapshot>" << std::endl;
         return;
     }
 
@@ -139,7 +139,7 @@ void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.size() < 2 || !command_utils::ValidateArgs(args, 2)) {
         std::cout << "Invalid usage of command tag!" << std::endl;
-        std::cout << "Proper Usage: tag <filename> <tag> [--directory <folder>]" << std::endl;
+        std::cout << "Proper Usage: note-db tag <filename> <tag> [--directory <folder>]" << std::endl;
         return;
     }
 
@@ -162,7 +162,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command import!" << std::endl;
-        std::cout << "Proper Usage: import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        std::cout << "Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
         return;
     }
 
@@ -216,6 +216,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     const std::string& command = command_args[0];
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
+    if (command == "--version") {
+        std::cout << "note-db v1.0" << std::endl;
+        return;
+    }
+
     if (command == "init") {
         HandleInitCommand(args);
         return;
@@ -259,7 +264,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleDiffCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
-    } else if (command == "help") {
+    } else if (command == "help" || command == "--help") {
         HandleHelpCommand();
     } else {
         std::cout << "Unsupported command: " << command << "\n";
