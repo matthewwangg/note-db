@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ make
+
+      - name: Build
+        run: chmod +x build.sh && ./build.sh
+
+      - name: Upload binary to GitHub
+        uses: softprops/action-gh-release@v2.2.2
+        with:
+          files: build/note_db
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
