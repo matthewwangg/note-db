@@ -221,6 +221,11 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         return;
     }
 
+    if (command == "help" || command == "--help") {
+        HandleHelpCommand();
+        return;
+    }
+
     if (command == "init") {
         HandleInitCommand(args);
         return;
@@ -264,8 +269,6 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleDiffCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
-    } else if (command == "help" || command == "--help") {
-        HandleHelpCommand();
     } else {
         std::cout << "Unsupported command: " << command << "\n";
         HandleHelpCommand();
