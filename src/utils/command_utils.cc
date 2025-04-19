@@ -34,4 +34,10 @@ bool ValidateArgs(const std::vector<std::string>& args, int required) {
     return true;
 }
 
+std::unordered_map<std::string, std::string> ExtractFlagMap(const std::vector<std::string>& args, int start_index) {
+    std::vector<std::string> flags(args.begin() + start_index, args.end());
+    return command_utils::ParseFlags(flags);
+}
+
+
 }

@@ -28,8 +28,7 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
@@ -53,8 +52,7 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
@@ -77,8 +75,7 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (!std::filesystem::exists(path / normalized_filename)) {
@@ -101,8 +98,7 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     manager.SearchNote(args, flag_map);
 }
@@ -146,8 +142,7 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename, args[1]};
 
-    std::vector<std::string> flags(args.begin() + 2, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 2);
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (!std::filesystem::exists(path / normalized_filename)) {
@@ -172,8 +167,7 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
     std::filesystem::path destination = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map) / file_path.filename();
@@ -194,8 +188,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
         return;
     }
 
-    std::vector<std::string> flags(args.begin() + 1, args.end());
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ParseFlags(flags);
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     config_utils::SetupConfigFile(args, flag_map);
     template_utils::SetupTemplateDirectory(args, flag_map);
