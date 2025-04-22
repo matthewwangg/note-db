@@ -19,6 +19,7 @@ void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleInitCommand(const std::vector<std::string>& args);
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args);
 
 void HandleHelpCommand();
 
