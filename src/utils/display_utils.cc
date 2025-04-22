@@ -51,6 +51,7 @@ void PrintCommands() {
               << "  snapshot                 Save a snapshot of note contents" << std::endl
               << "  tag <filename> <tag>     Add a tag to a note" << std::endl
               << "  import <filepath>        Import a note" << std::endl
+              << "  template <filename>      Create a new template" << std::endl
               << "  help                     Show this message" << std::endl;
 }
 

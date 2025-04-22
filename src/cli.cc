@@ -154,6 +154,24 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
 }
 
+void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Invalid usage of command template!" << std::endl;
+        std::cout << "Proper Usage: template <filename>" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::filesystem::path template_path = manager.GetNotesDirectory() / "templates" / normalized_filename;
+
+    if (std::filesystem::exists(template_path)) {
+        std::cout << "Template " << normalized_filename << " already exists!" << std::endl;
+        return;
+    }
+
+    template_utils::CreateUniqueTemplate(manager.GetEditor(), template_path);
+}
+
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         std::cout << "Invalid usage of command import!" << std::endl;
@@ -262,6 +280,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
         HandleDiffCommand(manager, args);
     } else if (command == "tag") {
         HandleTagCommand(manager, args);
+    } else if (command == "template") {
+        HandleTemplateCommand(manager, args);
     } else {
         std::cout << "Unsupported command: " << command << "\n";
         HandleHelpCommand();
