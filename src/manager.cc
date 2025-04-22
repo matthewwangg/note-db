@@ -144,6 +144,10 @@ void NoteManager::TagNote(const std::vector<std::string>& args, const std::unord
     note.SaveToFile(path);
 }
 
+std::string NoteManager::GetEditor() {
+    return editor_;
+}
+
 std::filesystem::path NoteManager::GetNotesDirectory() {
     return notes_directory_;
 }

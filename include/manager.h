@@ -15,6 +15,7 @@ public:
     explicit NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index);
     ~NoteManager() = default;
 
+    std::string GetEditor();
     std::filesystem::path GetNotesDirectory();
 
     void CreateNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
