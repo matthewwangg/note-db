@@ -4,6 +4,7 @@
 #include <string>
 
 #include "cli.h"
+#include "utils/config_utils.h"
 
 class CliTest : public ::testing::Test {
 protected:
@@ -13,9 +14,13 @@ protected:
 
     std::streambuf* original_buf_;
     std::ofstream out_;
+    std::string saved_notes_directory_;
 };
 
 void CliTest::SetUp() {
+    saved_notes_directory_ = config_utils::LoadNotesDirectory();
+    config_utils::SetupConfigFile({"cli_test_dir"}, {});
+
     out_.open("output.txt");
     original_buf_ = std::cout.rdbuf(out_.rdbuf());
 }
@@ -24,6 +29,8 @@ void CliTest::TearDown() {
     std::cout.rdbuf(original_buf_);
     out_.close();
     std::filesystem::remove("output.txt");
+
+    config_utils::SetupConfigFile({saved_notes_directory_}, {});
 }
 
 std::string CliTest::ReadOutput() {
@@ -41,6 +48,7 @@ TEST_F(CliTest, HelpCommandPrintsCommands) {
 }
 
 TEST_F(CliTest, InitCommandPrintsSuccess) {
+    cli::DispatchCommand({"init", "notes"});
     cli::DispatchCommand({"init", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -50,8 +58,6 @@ TEST_F(CliTest, InitCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, NewCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"new", "test.md", "--editor", "none", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -61,8 +67,6 @@ TEST_F(CliTest, NewCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, EditCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"new", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"});
     cli::DispatchCommand({"edit", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
@@ -73,8 +77,6 @@ TEST_F(CliTest, EditCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, DeleteCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"new", "delete_test.md", "--editor", "none", "--directory", "cli_test_dir"});
     cli::DispatchCommand({"delete", "delete_test.md", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
@@ -85,8 +87,6 @@ TEST_F(CliTest, DeleteCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, TagCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"new", "tag_test.md", "--editor", "none", "--directory", "cli_test_dir"});
     cli::DispatchCommand({"tag", "tag_test.md", "testtag", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
@@ -97,8 +97,6 @@ TEST_F(CliTest, TagCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, SnapshotCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"snapshot"});
     std::string contents = ReadOutput();
 
@@ -108,8 +106,6 @@ TEST_F(CliTest, SnapshotCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, ImportCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     std::ofstream test_file("temp_import.md");
     test_file << "# Imported Note\n";
     test_file.close();
@@ -131,8 +127,6 @@ TEST_F(CliTest, NewCommandFailsWithoutArgs) {
 }
 
 TEST_F(CliTest, NewCommandFailsIfAlreadyExistsWithoutOverwrite) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});
     cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});  // no --overwrite
     std::string contents = ReadOutput();
@@ -143,8 +137,6 @@ TEST_F(CliTest, NewCommandFailsIfAlreadyExistsWithoutOverwrite) {
 }
 
 TEST_F(CliTest, EditCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"edit", "ghost.md", "--editor", "none", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -154,8 +146,6 @@ TEST_F(CliTest, EditCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, DeleteCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"delete", "ghost.md", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -165,8 +155,6 @@ TEST_F(CliTest, DeleteCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, TagCommandFailsWithMissingArgs) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"tag", "missing_tag.md", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -176,8 +164,6 @@ TEST_F(CliTest, TagCommandFailsWithMissingArgs) {
 }
 
 TEST_F(CliTest, TagCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"tag", "ghost.md", "sometag", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
@@ -187,8 +173,6 @@ TEST_F(CliTest, TagCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, SnapshotCommandFailsWithExtraArgs) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"snapshot", "unexpected_arg"});
     std::string contents = ReadOutput();
 
@@ -198,8 +182,6 @@ TEST_F(CliTest, SnapshotCommandFailsWithExtraArgs) {
 }
 
 TEST_F(CliTest, DiffCommandFailsWithoutArgs) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"diff"});
     std::string contents = ReadOutput();
 
@@ -209,8 +191,6 @@ TEST_F(CliTest, DiffCommandFailsWithoutArgs) {
 }
 
 TEST_F(CliTest, ImportCommandFailsWithMissingFile) {
-    cli::DispatchCommand({"init", "cli_test_dir"});
-
     cli::DispatchCommand({"import", "no_such_file.md", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 

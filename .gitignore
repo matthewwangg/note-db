@@ -38,3 +38,4 @@
 /build
 /.notedb
 /tests/temp/
+/cli_test_dir
