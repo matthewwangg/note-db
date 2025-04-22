@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "manager.h"
+
 namespace template_utils {
 
 void GenerateDefaultTemplate(const std::filesystem::path& default_template) {
@@ -28,6 +30,14 @@ void SetupTemplateDirectory(const std::vector<std::string>& args, const std::uno
     std::filesystem::create_directories(template_dir);
 
     GenerateDefaultTemplate(template_dir / "default.md");
+}
+
+void CreateUniqueTemplate(NoteManager& manager, const std::filesystem::path& template_path) {
+    std::filesystem::create_directories(template_path.parent_path());
+    std::ofstream out(template_path);
+
+    std::string command = manager.GetEditor() + " " + (template_path).string();
+    std::system(command.c_str());
 }
 
 }

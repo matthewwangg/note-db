@@ -6,10 +6,13 @@
 #include <unordered_map>
 #include <vector>
 
+#include "manager.h"
+
 namespace template_utils {
 
 void GenerateDefaultTemplate(const std::filesystem::path& default_template);
 void SetupTemplateDirectory(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+void CreateUniqueTemplate(NoteManager& manager, const std::filesystem::path& template_path);
 
 }
 
