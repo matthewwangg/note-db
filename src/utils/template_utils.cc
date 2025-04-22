@@ -32,11 +32,11 @@ void SetupTemplateDirectory(const std::vector<std::string>& args, const std::uno
     GenerateDefaultTemplate(template_dir / "default.md");
 }
 
-void CreateUniqueTemplate(NoteManager& manager, const std::filesystem::path& template_path) {
+void CreateUniqueTemplate(std::string editor, const std::filesystem::path& template_path) {
     std::filesystem::create_directories(template_path.parent_path());
     std::ofstream out(template_path);
 
-    std::string command = manager.GetEditor() + " " + (template_path).string();
+    std::string command = editor + " " + (template_path).string();
     std::system(command.c_str());
 }
 

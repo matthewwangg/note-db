@@ -169,7 +169,7 @@ void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>&
         return;
     }
 
-    template_utils::CreateUniqueTemplate(manager, template_path);
+    template_utils::CreateUniqueTemplate(manager.GetEditor(), template_path);
 }
 
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
