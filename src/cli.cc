@@ -181,6 +181,10 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
+    if (file_path.filename().string().length() > 30) {
+        display_utils::PrintWarning("Filename is very long, consider something below 30 characters");
+    }
+
     if (file_path.extension() != ".md") {
         display_utils::PrintWarning("Imported file is not a Markdown file!");
     }
@@ -242,6 +246,10 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     if (std::filesystem::exists(path / normalized_filename) && !overwrite) {
         display_utils::PrintError("File " + normalized_filename + " already exists!");
         return;
+    }
+
+    if (normalized_filename.length() > 30) {
+        display_utils::PrintWarning("Filename is very long, consider something below 30 characters");
     }
 
     if (flag_map.find("--editor") == flag_map.end() && !std::getenv("NOTEDB_EDITOR")) {

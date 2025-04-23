@@ -48,9 +48,9 @@ void PrintModified(const std::string& path) {
 }
 
 void PrintNotes(std::vector<Note>& notes) {
-    const int filename_width = 20;
-    const int title_width = 20;
-    const int date_width = 20;
+    const int filename_width = 35;
+    const int title_width = 30;
+    const int date_width = 15;
     const int content_preview_width = 50;
 
     std::cout << std::left
