@@ -100,7 +100,7 @@ TEST_F(CliTest, SnapshotCommandPrintsSuccess) {
     cli::DispatchCommand({"snapshot"});
     std::string contents = ReadOutput();
 
-    EXPECT_NE(contents.find("Snapshot successfully saved"), std::string::npos);
+    EXPECT_NE(contents.find("successfully saved"), std::string::npos);
 
     std::filesystem::remove_all("cli_test_dir");
 }

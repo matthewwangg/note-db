@@ -12,7 +12,7 @@ public:
     void Diff(const Snapshot& other) const;
     void Generate(const std::filesystem::path& notes_directory);
     void LoadFromFile(const std::filesystem::path& path);
-    void SaveToFile() const;
+    time_t SaveToFile() const;
 
 private:
     std::vector<SnapshotEntry> entries_;

@@ -277,8 +277,10 @@ void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
 
     Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
     snapshot.Generate(manager.GetNotesDirectory());
-    snapshot.SaveToFile();
-    display_utils::PrintSuccess("Snapshot successfully saved!");
+    time_t timestamp = snapshot.SaveToFile();
+    std::string snapshot_filename = std::to_string(timestamp) + ".json";
+
+    display_utils::PrintSuccess("Snapshot " + snapshot_filename + " successfully saved!");
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {

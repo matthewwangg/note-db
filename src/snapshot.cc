@@ -89,7 +89,7 @@ void Snapshot::LoadFromFile(const std::filesystem::path& path) {
     }
 }
 
-void Snapshot::SaveToFile() const {
+time_t Snapshot::SaveToFile() const {
     time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::string filename = std::to_string(current_time) + ".json";
 
@@ -113,6 +113,8 @@ void Snapshot::SaveToFile() const {
     }
 
     out << "]\n";
+
+    return current_time;
 }
 
 
