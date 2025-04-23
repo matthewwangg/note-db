@@ -28,7 +28,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
     if (command == "--version") {
-        std::cout << "note-db v1.0" << std::endl;
+        std::cout << "note-db v0.1" << std::endl;
         return;
     }
 
@@ -44,8 +44,8 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     std::string notes_directory = config_utils::LoadNotesDirectory();
     if (notes_directory.empty()) {
-        std::cout << "Missing or invalid .notedb/config.json in home directory!" << std::endl;
-        std::cout << "Try running init <directory> to indicate where your note files are" << std::endl;
+        display_utils::PrintError("Missing or invalid .notedb/config.json in home directory!");
+        display_utils::PrintInfo("Try running note-db init <directory> to indicate where your note files are");
         return;
     }
 
@@ -59,7 +59,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     }
 
     if (!input_validation_utils::ValidateArgs(args)) {
-        std::cout << "Invalid argument(s)." << std::endl;
+        display_utils::PrintError("Invalid argument(s).");
         return;
     }
 
@@ -83,15 +83,15 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "template") {
         HandleTemplateCommand(manager, args);
     } else {
-        std::cout << "Unsupported command: " << command << "\n";
+        display_utils::PrintError("Unsupported command: " + command);
         HandleHelpCommand();
     }
 }
 
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command delete!" << std::endl;
-        std::cout << "Proper Usage: note-db delete <filename> [--directory <folder>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command delete!");
+        display_utils::PrintInfo("Proper Usage: note-db delete <filename> [--directory <folder>]");
         return;
     }
 
@@ -102,18 +102,18 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist!" << std::endl;
+        display_utils::PrintError("File " + normalized_filename + " doesn't exist!");
         return;
     }
 
     manager.DeleteNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully deleted!" << std::endl;
+    display_utils::PrintSuccess("Note " + normalized_filename + " successfully deleted!");
 }
 
 void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command diff!" << std::endl;
-        std::cout << "Proper Usage: note-db diff <snapshot>" << std::endl;
+        display_utils::PrintError("Invalid usage of command diff!");
+        display_utils::PrintInfo("Proper Usage: note-db diff <snapshot>");
         return;
     }
 
@@ -128,8 +128,8 @@ void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
 
 void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command edit!" << std::endl;
-        std::cout << "Proper Usage: note-db edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command edit!");
+        display_utils::PrintInfo("Proper Usage: note-db edit <filename> [--editor <editor>] [--directory <folder>]");
         return;
     }
 
@@ -141,12 +141,12 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
+        display_utils::PrintError("File " + normalized_filename + " doesn't exist yet!");
         return;
     }
 
     manager.EditNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully edited!" << std::endl;
+    display_utils::PrintSuccess("Note " + normalized_filename + " successfully edited!");
 }
 
 void HandleHelpCommand() {
@@ -155,14 +155,14 @@ void HandleHelpCommand() {
 
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command import!" << std::endl;
-        std::cout << "Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command import!");
+        display_utils::PrintInfo("Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]");
         return;
     }
 
     std::filesystem::path file_path = std::filesystem::absolute(args[0]);
     if (!std::filesystem::exists(file_path)) {
-        std::cout << "File doesn't exist: " << file_path << std::endl;
+        display_utils::PrintError("File doesn't exist: " + file_path.string());
         return;
     }
 
@@ -172,18 +172,18 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
     std::filesystem::path destination = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map) / file_path.filename();
 
     if (std::filesystem::exists(destination) && !overwrite) {
-        std::cout << "File " << file_path << " exists already in notes directory!" << std::endl;
+        display_utils::PrintError("File " + file_path.filename().string() + " exists already in notes directory!");
         return;
     }
 
     manager.ImportNote(args, flag_map);
-    std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
+    display_utils::PrintSuccess("Note " + args[0] + " successfully imported!");
 }
 
 void HandleInitCommand(const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command init!" << std::endl;
-        std::cout << "Proper Usage: init <directory>" << std::endl;
+        display_utils::PrintError("Invalid usage of command init!");
+        display_utils::PrintInfo("Proper Usage: note-db init <directory>");
         return;
     }
 
@@ -192,7 +192,7 @@ void HandleInitCommand(const std::vector<std::string>& args) {
     config_utils::SetupConfigFile(args, flag_map);
     template_utils::SetupTemplateDirectory(args, flag_map);
     snapshot_utils::SetupSnapshotDirectory(args, flag_map);
-    std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
+    display_utils::PrintSuccess("Directory " + args[0] + " successfully initialized!");
 }
 
 void HandleListCommand(NoteManager& manager) {
@@ -201,8 +201,8 @@ void HandleListCommand(NoteManager& manager) {
 
 void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command new!" << std::endl;
-        std::cout << "Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command new!");
+        display_utils::PrintInfo("Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]");
         return;
     }
 
@@ -215,18 +215,18 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (std::filesystem::exists(path / normalized_filename) && !overwrite) {
-        std::cout << "File " << normalized_filename << " already exists!" << std::endl;
+        display_utils::PrintError("File " + normalized_filename + " already exists!");
         return;
     }
 
     manager.CreateNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
+    display_utils::PrintSuccess("Note " + normalized_filename + " successfully created!");
 }
 
 void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command search!" << std::endl;
-        std::cout << "Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command search!");
+        display_utils::PrintInfo("Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]");
         return;
     }
 
@@ -237,21 +237,21 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
 
 void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (!args.empty()) {
-        std::cout << "Invalid usage of command snapshot!" << std::endl;
-        std::cout << "Proper Usage: note-db snapshot" << std::endl;
+        display_utils::PrintError("Invalid usage of command snapshot!");
+        display_utils::PrintInfo("Proper Usage: note-db snapshot");
         return;
     }
 
     Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
     snapshot.Generate(manager.GetNotesDirectory());
     snapshot.SaveToFile();
-    std::cout << "Snapshot successfully saved!" << std::endl;
+    display_utils::PrintSuccess("Snapshot successfully saved!");
 }
 
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.size() < 2 || !command_utils::ValidateArgs(args, 2)) {
-        std::cout << "Invalid usage of command tag!" << std::endl;
-        std::cout << "Proper Usage: note-db tag <filename> <tag> [--directory <folder>]" << std::endl;
+        display_utils::PrintError("Invalid usage of command tag!");
+        display_utils::PrintInfo("Proper Usage: note-db tag <filename> <tag> [--directory <folder>]");
         return;
     }
 
@@ -262,18 +262,18 @@ void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
     if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
+        display_utils::PrintError("File " + normalized_filename + " doesn't exist yet!");
         return;
     }
 
     manager.TagNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
+    display_utils::PrintSuccess("Note " + normalized_filename + " successfully tagged!");
 }
 
 void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty()) {
-        std::cout << "Invalid usage of command template!" << std::endl;
-        std::cout << "Proper Usage: template <filename>" << std::endl;
+        display_utils::PrintError("Invalid usage of command template!");
+        display_utils::PrintInfo("Proper Usage: template <filename>");
         return;
     }
 
@@ -281,7 +281,7 @@ void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>&
     std::filesystem::path template_path = manager.GetNotesDirectory() / "templates" / normalized_filename;
 
     if (std::filesystem::exists(template_path)) {
-        std::cout << "Template " << normalized_filename << " already exists!" << std::endl;
+        display_utils::PrintError("Template " + normalized_filename + " already exists!");
         return;
     }
 
