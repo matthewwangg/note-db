@@ -11,6 +11,8 @@
 
 class SearchIndex {
 public:
+    SearchIndex() = default;
+
     void BuildIndex(const std::filesystem::path& notes_directory);
     void IndexNote(const Note& note);
     std::vector<std::string> Search(const std::string& query);

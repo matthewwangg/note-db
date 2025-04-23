@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <index.h>
+#include "index.h"
 
 
 class NoteManager {
@@ -15,22 +15,21 @@ public:
     explicit NoteManager(const std::string& notes_directory, std::shared_ptr<SearchIndex> index);
     ~NoteManager() = default;
 
+    void CreateNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+    void DeleteNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+    void EditNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+    void ImportNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+    void ListNotes();
+    void SearchNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+    void TagNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+
     std::string GetEditor();
     std::filesystem::path GetNotesDirectory();
-
-    void CreateNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
-    void ListNotes();
-    void EditNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
-    void DeleteNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
-    void SearchNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
-    void ImportNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
-    void TagNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
 
 private:
     std::string editor_;
     std::shared_ptr<SearchIndex> index_;
     std::filesystem::path notes_directory_;
-
 };
 
 #endif //NOTE_DB_MANAGER_H

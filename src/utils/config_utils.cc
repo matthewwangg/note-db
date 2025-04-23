@@ -59,4 +59,4 @@ void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_
         << "}\n";
 }
 
-}
+} // namespace config_utils

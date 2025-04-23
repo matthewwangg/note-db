@@ -48,17 +48,13 @@ void NoteManager::CreateNote(const std::vector<std::string>& args, const std::un
     std::system(command.c_str());
 }
 
-void NoteManager::ListNotes() {
-    std::vector<Note> notes;
+void NoteManager::DeleteNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
+    const std::string& filename = args[0];
+    std::filesystem::path path = command_utils::ResolveDirectory(notes_directory_, flag_map);
 
-    for(auto const& path : std::filesystem::recursive_directory_iterator(notes_directory_)) {
-        if (!path.is_regular_file() || path.path().extension().string() != ".md") {
-            continue;
-        }
-        notes.push_back(Note::LoadFromFile(path));
+    if (std::filesystem::exists(path / filename)) {
+        std::filesystem::remove(path / filename);
     }
-
-    display_utils::PrintNotes(notes);
 }
 
 void NoteManager::EditNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
@@ -84,13 +80,31 @@ void NoteManager::EditNote(const std::vector<std::string>& args, const std::unor
     std::system(command.c_str());
 }
 
-void NoteManager::DeleteNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
-    const std::string& filename = args[0];
-    std::filesystem::path path = command_utils::ResolveDirectory(notes_directory_, flag_map);
+void NoteManager::ImportNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
+    const std::filesystem::path file_path = args[0];
+    const std::string filename = file_path.filename().string();
 
-    if (std::filesystem::exists(path / filename)) {
-        std::filesystem::remove(path / filename);
+    Note note = Note::LoadFromFile(file_path);
+    note.title = filename.substr(0, filename.length() - 3);
+    note.created = std::chrono::system_clock::now();
+    note.updated = std::chrono::system_clock::now();
+
+    std::filesystem::path path = command_utils::ResolveDirectory(notes_directory_, flag_map);
+    std::filesystem::create_directories(path);
+    note.SaveToFile(path);
+}
+
+void NoteManager::ListNotes() {
+    std::vector<Note> notes;
+
+    for(auto const& path : std::filesystem::recursive_directory_iterator(notes_directory_)) {
+        if (!path.is_regular_file() || path.path().extension().string() != ".md") {
+            continue;
+        }
+        notes.push_back(Note::LoadFromFile(path));
     }
+
+    display_utils::PrintNotes(notes);
 }
 
 void NoteManager::SearchNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
@@ -118,20 +132,6 @@ void NoteManager::SearchNote(const std::vector<std::string>& args, const std::un
     }
 
     display_utils::PrintNotes(notes);
-}
-
-void NoteManager::ImportNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
-    const std::filesystem::path file_path = args[0];
-    const std::string filename = file_path.filename().string();
-
-    Note note = Note::LoadFromFile(file_path);
-    note.title = filename.substr(0, filename.length() - 3);
-    note.created = std::chrono::system_clock::now();
-    note.updated = std::chrono::system_clock::now();
-
-    std::filesystem::path path = command_utils::ResolveDirectory(notes_directory_, flag_map);
-    std::filesystem::create_directories(path);
-    note.SaveToFile(path);
 }
 
 void NoteManager::TagNote(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {

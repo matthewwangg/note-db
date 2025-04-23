@@ -8,23 +8,20 @@
 
 namespace cli {
 
-void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args);
+void DispatchCommand(const std::vector<std::string>& tokens);
 void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleListCommand(NoteManager& manager);
-
-void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleHelpCommand();
 void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleInitCommand(const std::vector<std::string>& args);
+void HandleListCommand(NoteManager& manager);
+void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
+void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args);
 
-void HandleHelpCommand();
-
-void DispatchCommand(const std::vector<std::string>& tokens);
-
-}
+} // namespace cli
 
 #endif //NOTE_DB_CLI_H

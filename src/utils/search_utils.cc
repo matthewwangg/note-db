@@ -10,31 +10,6 @@
 
 namespace search_utils {
 
-bool MatchesTagFilter(const Note& note, const std::string& tag_filter) {
-    if (tag_filter.empty()) {
-        return true;
-    }
-
-    if (note.tags.count(tag_filter) > 0) {
-        return true;
-    }
-
-    return false;
-}
-
-std::string GetTagFilter(const std::unordered_map<std::string, std::string>& flag_map) {
-    std::string tag_filter;
-
-    auto it = flag_map.find("--tag");
-    if (it != flag_map.end()) {
-        tag_filter = it->second;
-    } else {
-        tag_filter = "";
-    }
-
-    return tag_filter;
-}
-
 int GetLimitFilter(const std::unordered_map<std::string, std::string>& flag_map) {
     int limit;
 
@@ -61,6 +36,31 @@ std::string GetSortBy(const std::unordered_map<std::string, std::string>& flag_m
     return sort_by;
 }
 
+std::string GetTagFilter(const std::unordered_map<std::string, std::string>& flag_map) {
+    std::string tag_filter;
+
+    auto it = flag_map.find("--tag");
+    if (it != flag_map.end()) {
+        tag_filter = it->second;
+    } else {
+        tag_filter = "";
+    }
+
+    return tag_filter;
+}
+
+bool MatchesTagFilter(const Note& note, const std::string& tag_filter) {
+    if (tag_filter.empty()) {
+        return true;
+    }
+
+    if (note.tags.count(tag_filter) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
 void SortNotes(std::vector<Note>& notes, const std::string& sort_by) {
     std::function<bool(const Note&, const Note&)> comparator;
 
@@ -85,4 +85,4 @@ void SortNotes(std::vector<Note>& notes, const std::string& sort_by) {
     std::sort(notes.begin(), notes.end(), comparator);
 }
 
-}
+} // namespace search_utils

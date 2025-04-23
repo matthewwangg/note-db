@@ -6,15 +6,6 @@
 
 namespace input_validation_utils {
 
-bool ValidateArgs(const std::vector<std::string>& args) {
-    for (const std::string& arg : args) {
-        if (!IsValidArg(arg)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 bool IsValidArg(const std::string& arg) {
     if (arg.empty() || std::all_of(arg.begin(), arg.end(), isspace)) {
         return false;
@@ -51,4 +42,13 @@ std::string NormalizeFilename(const std::string& name) {
     return normalized_filename;
 }
 
+bool ValidateArgs(const std::vector<std::string>& args) {
+    for (const std::string& arg : args) {
+        if (!IsValidArg(arg)) {
+            return false;
+        }
+    }
+    return true;
 }
+
+} // namespace input_validation_utils

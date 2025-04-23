@@ -10,6 +10,28 @@
 
 namespace display_utils {
 
+void Debug(const std::string& debug_message, bool debug) {
+    if (debug) {
+        std::cout << "[DEBUG]: " << debug_message << std::endl;
+    }
+}
+
+void PrintCommands() {
+    std::cout << "Available commands:" << std::endl
+              << "  init <directory>         Initialize a note directory" << std::endl
+              << "  new <filename>           Create a new note" << std::endl
+              << "  edit <filename>          Edit a note" << std::endl
+              << "  delete <filename>        Delete a note" << std::endl
+              << "  list                     List all notes" << std::endl
+              << "  search <query>           Search note contents" << std::endl
+              << "  snapshot                 Save a snapshot of note contents" << std::endl
+              << "  tag <filename> <tag>     Add a tag to a note" << std::endl
+              << "  import <filepath>        Import a note" << std::endl
+              << "  template <filename>      Create a new template" << std::endl
+              << "  help                     Show this message" << std::endl;
+}
+
+
 void PrintNotes(std::vector<Note>& notes) {
     const int filename_width = 20;
     const int title_width = 20;
@@ -40,25 +62,4 @@ void PrintNotes(std::vector<Note>& notes) {
     }
 }
 
-void PrintCommands() {
-    std::cout << "Available commands:" << std::endl
-              << "  init <directory>         Initialize a note directory" << std::endl
-              << "  new <filename>           Create a new note" << std::endl
-              << "  edit <filename>          Edit a note" << std::endl
-              << "  delete <filename>        Delete a note" << std::endl
-              << "  list                     List all notes" << std::endl
-              << "  search <query>           Search note contents" << std::endl
-              << "  snapshot                 Save a snapshot of note contents" << std::endl
-              << "  tag <filename> <tag>     Add a tag to a note" << std::endl
-              << "  import <filepath>        Import a note" << std::endl
-              << "  template <filename>      Create a new template" << std::endl
-              << "  help                     Show this message" << std::endl;
-}
-
-void Debug(const std::string& debug_message, bool debug) {
-    if (debug) {
-        std::cout << "[DEBUG]: " << debug_message << std::endl;
-    }
-}
-
-}
+} // namespace display_utils

@@ -9,14 +9,14 @@ class Snapshot {
 public:
     explicit Snapshot(const std::filesystem::path& root);
 
-    void Generate(const std::filesystem::path& notes_directory);
-    void SaveToFile() const;
-    void LoadFromFile(const std::filesystem::path& path);
     void Diff(const Snapshot& other) const;
+    void Generate(const std::filesystem::path& notes_directory);
+    void LoadFromFile(const std::filesystem::path& path);
+    void SaveToFile() const;
 
 private:
-    std::filesystem::path root_;
     std::vector<SnapshotEntry> entries_;
+    std::filesystem::path root_;
 };
 
 #endif //NOTE_DB_SNAPSHOT_H

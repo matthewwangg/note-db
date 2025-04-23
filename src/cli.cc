@@ -18,206 +18,6 @@
 
 namespace cli {
 
-void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command new!" << std::endl;
-        std::cout << "Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
-        return;
-    }
-
-    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::vector<std::string> normalized_args = {normalized_filename};
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-
-    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
-    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
-
-    if (std::filesystem::exists(path / normalized_filename) && !overwrite) {
-        std::cout << "File " << normalized_filename << " already exists!" << std::endl;
-        return;
-    }
-
-    manager.CreateNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
-}
-
-void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command edit!" << std::endl;
-        std::cout << "Proper Usage: note-db edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
-        return;
-    }
-
-    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::vector<std::string> normalized_args = {normalized_filename};
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-
-    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
-
-    if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
-        return;
-    }
-
-    manager.EditNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully edited!" << std::endl;
-}
-
-void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command delete!" << std::endl;
-        std::cout << "Proper Usage: note-db delete <filename> [--directory <folder>]" << std::endl;
-        return;
-    }
-
-    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::vector<std::string> normalized_args = {normalized_filename};
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
-
-    if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist!" << std::endl;
-        return;
-    }
-
-    manager.DeleteNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully deleted!" << std::endl;
-}
-
-void HandleListCommand(NoteManager& manager) {
-    manager.ListNotes();
-}
-
-void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command search!" << std::endl;
-        std::cout << "Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
-        return;
-    }
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-
-    manager.SearchNote(args, flag_map);
-}
-
-void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (!args.empty()) {
-        std::cout << "Invalid usage of command snapshot!" << std::endl;
-        std::cout << "Proper Usage: note-db snapshot" << std::endl;
-        return;
-    }
-
-    Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
-    snapshot.Generate(manager.GetNotesDirectory());
-    snapshot.SaveToFile();
-    std::cout << "Snapshot successfully saved!" << std::endl;
-}
-
-void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command diff!" << std::endl;
-        std::cout << "Proper Usage: note-db diff <snapshot>" << std::endl;
-        return;
-    }
-
-    Snapshot current_snapshot(manager.GetNotesDirectory() / "snapshots");
-    current_snapshot.Generate(manager.GetNotesDirectory());
-
-    Snapshot previous_snapshot(manager.GetNotesDirectory() / "snapshots");
-    previous_snapshot.LoadFromFile(manager.GetNotesDirectory() / "snapshots" / args[0]);
-
-    current_snapshot.Diff(previous_snapshot);
-}
-
-void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.size() < 2 || !command_utils::ValidateArgs(args, 2)) {
-        std::cout << "Invalid usage of command tag!" << std::endl;
-        std::cout << "Proper Usage: note-db tag <filename> <tag> [--directory <folder>]" << std::endl;
-        return;
-    }
-
-    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::vector<std::string> normalized_args = {normalized_filename, args[1]};
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 2);
-    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
-
-    if (!std::filesystem::exists(path / normalized_filename)) {
-        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
-        return;
-    }
-
-    manager.TagNote(normalized_args, flag_map);
-    std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
-}
-
-void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty()) {
-        std::cout << "Invalid usage of command template!" << std::endl;
-        std::cout << "Proper Usage: template <filename>" << std::endl;
-        return;
-    }
-
-    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::filesystem::path template_path = manager.GetNotesDirectory() / "templates" / normalized_filename;
-
-    if (std::filesystem::exists(template_path)) {
-        std::cout << "Template " << normalized_filename << " already exists!" << std::endl;
-        return;
-    }
-
-    template_utils::CreateUniqueTemplate(manager.GetEditor(), template_path);
-}
-
-void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command import!" << std::endl;
-        std::cout << "Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
-        return;
-    }
-
-    std::filesystem::path file_path = std::filesystem::absolute(args[0]);
-    if (!std::filesystem::exists(file_path)) {
-        std::cout << "File doesn't exist: " << file_path << std::endl;
-        return;
-    }
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-
-    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
-    std::filesystem::path destination = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map) / file_path.filename();
-
-    if (std::filesystem::exists(destination) && !overwrite) {
-        std::cout << "File " << file_path << " exists already in notes directory!" << std::endl;
-        return;
-    }
-
-    manager.ImportNote(args, flag_map);
-    std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
-}
-
-void HandleInitCommand(const std::vector<std::string>& args) {
-    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
-        std::cout << "Invalid usage of command init!" << std::endl;
-        std::cout << "Proper Usage: init <directory>" << std::endl;
-        return;
-    }
-
-    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
-
-    config_utils::SetupConfigFile(args, flag_map);
-    template_utils::SetupTemplateDirectory(args, flag_map);
-    snapshot_utils::SetupSnapshotDirectory(args, flag_map);
-    std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
-}
-
-void HandleHelpCommand() {
-    display_utils::PrintCommands();
-}
-
 void DispatchCommand(const std::vector<std::string>& command_args) {
     if (command_args.empty()) {
         HandleHelpCommand();
@@ -288,4 +88,204 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
     }
 }
 
+void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command delete!" << std::endl;
+        std::cout << "Proper Usage: note-db delete <filename> [--directory <folder>]" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
+
+    if (!std::filesystem::exists(path / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist!" << std::endl;
+        return;
+    }
+
+    manager.DeleteNote(normalized_args, flag_map);
+    std::cout << "Note " << normalized_filename << " successfully deleted!" << std::endl;
 }
+
+void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command diff!" << std::endl;
+        std::cout << "Proper Usage: note-db diff <snapshot>" << std::endl;
+        return;
+    }
+
+    Snapshot current_snapshot(manager.GetNotesDirectory() / "snapshots");
+    current_snapshot.Generate(manager.GetNotesDirectory());
+
+    Snapshot previous_snapshot(manager.GetNotesDirectory() / "snapshots");
+    previous_snapshot.LoadFromFile(manager.GetNotesDirectory() / "snapshots" / args[0]);
+
+    current_snapshot.Diff(previous_snapshot);
+}
+
+void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command edit!" << std::endl;
+        std::cout << "Proper Usage: note-db edit <filename> [--editor <editor>] [--directory <folder>]" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
+
+    if (!std::filesystem::exists(path / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
+        return;
+    }
+
+    manager.EditNote(normalized_args, flag_map);
+    std::cout << "Note " << normalized_filename << " successfully edited!" << std::endl;
+}
+
+void HandleHelpCommand() {
+    display_utils::PrintCommands();
+}
+
+void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command import!" << std::endl;
+        std::cout << "Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        return;
+    }
+
+    std::filesystem::path file_path = std::filesystem::absolute(args[0]);
+    if (!std::filesystem::exists(file_path)) {
+        std::cout << "File doesn't exist: " << file_path << std::endl;
+        return;
+    }
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
+    std::filesystem::path destination = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map) / file_path.filename();
+
+    if (std::filesystem::exists(destination) && !overwrite) {
+        std::cout << "File " << file_path << " exists already in notes directory!" << std::endl;
+        return;
+    }
+
+    manager.ImportNote(args, flag_map);
+    std::cout << "Note " << args[0] << " successfully imported!" << std::endl;
+}
+
+void HandleInitCommand(const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command init!" << std::endl;
+        std::cout << "Proper Usage: init <directory>" << std::endl;
+        return;
+    }
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    config_utils::SetupConfigFile(args, flag_map);
+    template_utils::SetupTemplateDirectory(args, flag_map);
+    snapshot_utils::SetupSnapshotDirectory(args, flag_map);
+    std::cout << "Directory " << args[0] << " successfully initialized!" << std::endl;
+}
+
+void HandleListCommand(NoteManager& manager) {
+    manager.ListNotes();
+}
+
+void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command new!" << std::endl;
+        std::cout << "Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename};
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
+    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
+
+    if (std::filesystem::exists(path / normalized_filename) && !overwrite) {
+        std::cout << "File " << normalized_filename << " already exists!" << std::endl;
+        return;
+    }
+
+    manager.CreateNote(normalized_args, flag_map);
+    std::cout << "Note " << normalized_filename << " successfully created!" << std::endl;
+}
+
+void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        std::cout << "Invalid usage of command search!" << std::endl;
+        std::cout << "Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]" << std::endl;
+        return;
+    }
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    manager.SearchNote(args, flag_map);
+}
+
+void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (!args.empty()) {
+        std::cout << "Invalid usage of command snapshot!" << std::endl;
+        std::cout << "Proper Usage: note-db snapshot" << std::endl;
+        return;
+    }
+
+    Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
+    snapshot.Generate(manager.GetNotesDirectory());
+    snapshot.SaveToFile();
+    std::cout << "Snapshot successfully saved!" << std::endl;
+}
+
+void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.size() < 2 || !command_utils::ValidateArgs(args, 2)) {
+        std::cout << "Invalid usage of command tag!" << std::endl;
+        std::cout << "Proper Usage: note-db tag <filename> <tag> [--directory <folder>]" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::vector<std::string> normalized_args = {normalized_filename, args[1]};
+
+    std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 2);
+    std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
+
+    if (!std::filesystem::exists(path / normalized_filename)) {
+        std::cout << "File " << normalized_filename << " doesn't exist yet!" << std::endl;
+        return;
+    }
+
+    manager.TagNote(normalized_args, flag_map);
+    std::cout << "Note " << normalized_filename << " successfully tagged!" << std::endl;
+}
+
+void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty()) {
+        std::cout << "Invalid usage of command template!" << std::endl;
+        std::cout << "Proper Usage: template <filename>" << std::endl;
+        return;
+    }
+
+    std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
+    std::filesystem::path template_path = manager.GetNotesDirectory() / "templates" / normalized_filename;
+
+    if (std::filesystem::exists(template_path)) {
+        std::cout << "Template " << normalized_filename << " already exists!" << std::endl;
+        return;
+    }
+
+    template_utils::CreateUniqueTemplate(manager.GetEditor(), template_path);
+}
+
+} // namespace cli

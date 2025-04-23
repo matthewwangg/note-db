@@ -9,6 +9,14 @@
 
 namespace template_utils {
 
+void CreateUniqueTemplate(std::string editor, const std::filesystem::path& template_path) {
+    std::filesystem::create_directories(template_path.parent_path());
+    std::ofstream out(template_path);
+
+    std::string command = editor + " " + (template_path).string();
+    std::system(command.c_str());
+}
+
 void GenerateDefaultTemplate(const std::filesystem::path& default_template) {
     std::ofstream out(default_template);
     if (out.is_open()) {
@@ -30,14 +38,6 @@ void SetupTemplateDirectory(const std::vector<std::string>& args, const std::uno
     std::filesystem::create_directories(template_dir);
 
     GenerateDefaultTemplate(template_dir / "default.md");
-}
-
-void CreateUniqueTemplate(std::string editor, const std::filesystem::path& template_path) {
-    std::filesystem::create_directories(template_path.parent_path());
-    std::ofstream out(template_path);
-
-    std::string command = editor + " " + (template_path).string();
-    std::system(command.c_str());
 }
 
 }
