@@ -95,6 +95,11 @@ void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
+    std::filesystem::path filename = args[0];
+    if (filename.has_extension() && filename.extension() != ".md") {
+        display_utils::PrintWarning("This file is not a Markdown note!");
+    }
+
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
     std::vector<std::string> normalized_args = {normalized_filename};
 
@@ -120,8 +125,14 @@ void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
     Snapshot current_snapshot(manager.GetNotesDirectory() / "snapshots");
     current_snapshot.Generate(manager.GetNotesDirectory());
 
+    std::filesystem::path path = manager.GetNotesDirectory() / "snapshots" / args[0];
+    if (path.extension().string() != ".json" || !std::filesystem::exists(path)) {
+        display_utils::PrintError("This is not a valid snapshot file! Please try again with a valid snapshot!");
+        return;
+    }
+
     Snapshot previous_snapshot(manager.GetNotesDirectory() / "snapshots");
-    previous_snapshot.LoadFromFile(manager.GetNotesDirectory() / "snapshots" / args[0]);
+    previous_snapshot.LoadFromFile(path);
 
     current_snapshot.Diff(previous_snapshot);
 }
@@ -137,6 +148,10 @@ void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& arg
     std::vector<std::string> normalized_args = {normalized_filename};
 
     std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    if (flag_map.find("--editor") == flag_map.end() && !std::getenv("NOTEDB_EDITOR")) {
+        display_utils::PrintWarning("No editor specified. Using default editor " + manager.GetEditor() + ".");
+    }
 
     std::filesystem::path path = command_utils::ResolveDirectory(manager.GetNotesDirectory(), flag_map);
 
@@ -166,6 +181,10 @@ void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
         return;
     }
 
+    if (file_path.extension() != ".md") {
+        display_utils::PrintWarning("Imported file is not a Markdown file!");
+    }
+
     std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
 
     bool overwrite = flag_map.find("--overwrite") != flag_map.end() && flag_map.at("--overwrite") == "true";
@@ -188,6 +207,12 @@ void HandleInitCommand(const std::vector<std::string>& args) {
     }
 
     std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
+
+    std::filesystem::path target_directory = args[0];
+    if (std::filesystem::exists(target_directory) && !std::filesystem::is_directory(target_directory)) {
+        display_utils::PrintError("Path exists but is not a directory: " + target_directory.string());
+        return;
+    }
 
     config_utils::SetupConfigFile(args, flag_map);
     template_utils::SetupTemplateDirectory(args, flag_map);
@@ -219,6 +244,10 @@ void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
         return;
     }
 
+    if (flag_map.find("--editor") == flag_map.end() && !std::getenv("NOTEDB_EDITOR")) {
+        display_utils::PrintWarning("No editor specified. Using default editor.");
+    }
+
     manager.CreateNote(normalized_args, flag_map);
     display_utils::PrintSuccess("Note " + normalized_filename + " successfully created!");
 }
@@ -228,6 +257,10 @@ void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
         display_utils::PrintError("Invalid usage of command search!");
         display_utils::PrintInfo("Proper Usage: note-db search <query> [--tag <tag>] [--limit <limit>] [--sort-by <field>]");
         return;
+    }
+
+    if (args[0].length() < 3) {
+        display_utils::PrintWarning("Search query is very short. Results may be noisy.");
     }
 
     std::unordered_map<std::string, std::string> flag_map = command_utils::ExtractFlagMap(args, 1);
