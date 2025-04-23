@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "utils/display_utils.h"
 #include "utils/snapshot_utils.h"
 
 
@@ -28,21 +29,21 @@ void Snapshot::Diff(const Snapshot& previous_snapshot) const {
     }
 
     if (current_map == prev_map) {
-        std::cout << "No difference found between this snapshot and your current notes!" << std::endl;
+        display_utils::PrintInfo("No difference found between this snapshot and your current notes!");
     }
 
     for (const auto& [path, hash] : current_map) {
         auto it = prev_map.find(path);
         if (it == prev_map.end()) {
-            std::cout << "[ADDED]    " << path << '\n';
+            display_utils::PrintAdded(path);
         } else if (it->second != hash) {
-            std::cout << "[MODIFIED] " << path << '\n';
+            display_utils::PrintModified(path);
         }
     }
 
     for (const auto& [path, _] : prev_map) {
         if (current_map.find(path) == current_map.end()) {
-            std::cout << "[REMOVED]  " << path << '\n';
+            display_utils::PrintRemoved(path);
         }
     }
 }

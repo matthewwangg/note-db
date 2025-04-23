@@ -16,6 +16,10 @@ void Debug(const std::string& debug_message, bool debug) {
     }
 }
 
+void PrintAdded(const std::string& path) {
+    std::cout << "\033[1;32m[ADDED]   \033[0m " << path << std::endl;
+}
+
 void PrintCommands() {
     std::cout << "Available commands:" << std::endl
               << "  init <directory>         Initialize a note directory" << std::endl
@@ -31,6 +35,17 @@ void PrintCommands() {
               << "  help                     Show this message" << std::endl;
 }
 
+void PrintError(const std::string& message) {
+    std::cout << "\033[1;31m[ERROR]\033[0m   " << message << std::endl;
+}
+
+void PrintInfo(const std::string& message) {
+    std::cout << "\033[1;34m[INFO]\033[0m    " << message << std::endl;
+}
+
+void PrintModified(const std::string& path) {
+    std::cout << "\033[1;33m[MODIFIED]\033[0m " << path << std::endl;
+}
 
 void PrintNotes(std::vector<Note>& notes) {
     const int filename_width = 20;
@@ -60,6 +75,18 @@ void PrintNotes(std::vector<Note>& notes) {
                   << std::setw(content_preview_width) << content_preview
                   << std::endl;
     }
+}
+
+void PrintRemoved(const std::string& path) {
+    std::cout << "\033[1;31m[REMOVED] \033[0m " << path << std::endl;
+}
+
+void PrintSuccess(const std::string& message) {
+    std::cout << "\033[1;32m[SUCCESS]\033[0m " << message << std::endl;
+}
+
+void PrintWarning(const std::string& message) {
+    std::cout << "\033[1;33m[WARNING]\033[0m " << message << std::endl;
 }
 
 } // namespace display_utils
