@@ -31,6 +31,13 @@ void PrintCommands() {
               << "  help                     Show this message" << std::endl;
 }
 
+void PrintError(const std::string& message) {
+    std::cout << "\033[1;31m[ERROR]   " << message << "\033[0m\n";
+}
+
+void PrintInfo(const std::string& message) {
+    std::cout << "\033[1;31m[INFO]  " << message << "\033[0m\n";
+}
 
 void PrintNotes(std::vector<Note>& notes) {
     const int filename_width = 20;
@@ -60,6 +67,14 @@ void PrintNotes(std::vector<Note>& notes) {
                   << std::setw(content_preview_width) << content_preview
                   << std::endl;
     }
+}
+
+void PrintSuccess(const std::string& message) {
+    std::cout << "\033[1;32m[SUCCESS]   " << message << "\033[0m\n";
+}
+
+void PrintWarning(const std::string& message) {
+    std::cout << "\033[1;33m[WARNING]   " << message << "\033[0m\n";
 }
 
 } // namespace display_utils
