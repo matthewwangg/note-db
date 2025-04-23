@@ -9,10 +9,13 @@
 namespace display_utils {
 
 void Debug(const std::string& debug_message, bool debug);
+void PrintAdded(const std::string& path);
 void PrintCommands();
 void PrintError(const std::string& message);
 void PrintInfo(const std::string& message);
+void PrintModified(const std::string& path);
 void PrintNotes(std::vector<Note>& notes);
+void PrintRemoved(const std::string& path);
 void PrintSuccess(const std::string& message);
 void PrintWarning(const std::string& message);
 
