@@ -32,11 +32,11 @@ void PrintCommands() {
 }
 
 void PrintError(const std::string& message) {
-    std::cout << "\033[1;31m[ERROR]   " << message << "\033[0m\n";
+    std::cout << "\033[1;31m[ERROR]\033[0m   " << message << std::endl;
 }
 
 void PrintInfo(const std::string& message) {
-    std::cout << "\033[1;31m[INFO]  " << message << "\033[0m\n";
+    std::cout << "\033[1;34m[INFO]\033[0m    " << message << std::endl;
 }
 
 void PrintNotes(std::vector<Note>& notes) {
@@ -70,11 +70,11 @@ void PrintNotes(std::vector<Note>& notes) {
 }
 
 void PrintSuccess(const std::string& message) {
-    std::cout << "\033[1;32m[SUCCESS]   " << message << "\033[0m\n";
+    std::cout << "\033[1;32m[SUCCESS]\033[0m " << message << std::endl;
 }
 
 void PrintWarning(const std::string& message) {
-    std::cout << "\033[1;33m[WARNING]   " << message << "\033[0m\n";
+    std::cout << "\033[1;33m[WARNING]\033[0m " << message << std::endl;
 }
 
 } // namespace display_utils
