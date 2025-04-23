@@ -36,6 +36,6 @@
 /cmake-build-debug
 /notes
 /build
-/.notedb
+/.note-db
 /tests/temp/
 /cli_test_dir

@@ -44,7 +44,7 @@ void DispatchCommand(const std::vector<std::string>& command_args) {
 
     std::string notes_directory = config_utils::LoadNotesDirectory();
     if (notes_directory.empty()) {
-        display_utils::PrintError("Missing or invalid .notedb/config.json in home directory!");
+        display_utils::PrintError("Missing or invalid .note-db/config.json in home directory!");
         display_utils::PrintInfo("Try running note-db init <directory> to indicate where your note files are");
         return;
     }

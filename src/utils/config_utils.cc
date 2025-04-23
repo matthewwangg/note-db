@@ -19,7 +19,7 @@ std::filesystem::path GetHomeDirectory() {
 
 std::string LoadNotesDirectory() {
     std::filesystem::path home_directory = GetHomeDirectory();
-    std::ifstream in(home_directory / ".notedb" / "config.json");
+    std::ifstream in(home_directory / ".note-db" / "config.json");
     
     if (!in) {
         return "";
@@ -49,7 +49,7 @@ std::string LoadNotesDirectory() {
 
 void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     std::filesystem::path home_directory = GetHomeDirectory();
-    std::filesystem::path config_dir = home_directory / ".notedb";
+    std::filesystem::path config_dir = home_directory / ".note-db";
     std::filesystem::create_directories(config_dir);
 
     std::ofstream out(config_dir / "config.json");

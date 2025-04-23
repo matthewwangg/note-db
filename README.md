@@ -16,6 +16,7 @@ A C++ high-performance local knowledge base for managing Markdown notes with ful
 - `import <filepath>`: Import a Markdown file from elsewhere (`--overwrite`, `--directory`).
 - `snapshot`: Save a snapshot of current note states.
 - `diff <snapshot>`: Compare current notes to a previous snapshot.
+- `template <filename>`: Create a new template Markdown file.
 - `help` / `--help`: Display usage guide.
 - `--version`: Display the current version.
 
@@ -97,6 +98,11 @@ Diff with a previous snapshot:
 note-db diff 1713418010.json
 ```
 
+Create a new template:
+```bash
+note-db template cs-patterns.md
+```
+
 Display help:
 
 ```bash
@@ -123,7 +129,7 @@ export NOTEDB_EDITOR=vim
 note-db stores your config at:
 
 ```plaintext
-~/.notedb/config.json
+~/.note-db/config.json
 ```
 
 Example contents:
@@ -165,6 +171,8 @@ This is the content of the note.
 
 - [ ] Semantic search (e.g., embedding-based)
 - [ ] Archive/restore notes
+- [ ] Encrypted notes (e.g., GPG integration)
+- [ ] Git-based syncing or backup support
 
 ---
 
