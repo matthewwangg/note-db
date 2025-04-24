@@ -1,12 +1,35 @@
 #include "utils/automation_utils.h"
 
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <optional>
+#include <string>
 
 #include "utils/config_utils.h"
 
 namespace automation_utils {
+
+std::string ExpandCommandVariables(const std::string& input) {
+    std::string result = input;
+
+    auto now = std::chrono::system_clock::now();
+    auto t = std::chrono::system_clock::to_time_t(now);
+    std::tm* tm = std::localtime(&t);
+
+    char date_buf[11];
+    std::strftime(date_buf, sizeof(date_buf), "%Y-%m-%d", tm);
+    std::string date(date_buf);
+    std::string timestamp = std::to_string(t);
+
+    size_t pos;
+    while ((pos = result.find("{{date}}")) != std::string::npos)
+        result.replace(pos, 8, date);
+    while ((pos = result.find("{{timestamp}}")) != std::string::npos)
+        result.replace(pos, 13, timestamp);
+
+    return result;
+}
 
 std::optional<CommandDefinition> LoadCommandByName(const std::string& name) {
     std::filesystem::path path = config_utils::GetHomeDirectory() / ".note-db" / "commands.json";
@@ -42,7 +65,7 @@ std::optional<CommandDefinition> LoadCommandByName(const std::string& name) {
             auto q1 = line.find('"');
             auto q2 = line.find('"', q1 + 1);
             if (q1 != std::string::npos && q2 != std::string::npos) {
-                command.steps.push_back(line.substr(q1 + 1, q2 - q1 - 1));
+                command.steps.push_back(ExpandCommandVariables(line.substr(q1 + 1, q2 - q1 - 1)));
             }
         }
     }

@@ -13,6 +13,7 @@ struct CommandDefinition {
 
 namespace automation_utils {
 
+std::string ExpandCommandVariables(const std::string& input);
 std::optional<CommandDefinition> LoadCommandByName(const std::string& name);
 void SetupBasicCommandFile();
 
