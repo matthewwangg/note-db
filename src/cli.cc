@@ -81,10 +81,11 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
         result = HandleTagCommand(manager, args);
     } else if (command == "template") {
         result = HandleTemplateCommand(manager, args);
+    } else if (command == "run") {
+        result = HandleRunCommand(manager, args);
     } else {
         display_utils::PrintError("Unsupported command: " + command);
         HandleHelpCommand();
-        return false;
     }
 
     return result;
@@ -290,6 +291,10 @@ bool HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& a
 
     manager.SearchNote(args, flag_map);
 
+    return true;
+}
+
+bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args) {
     return true;
 }
 

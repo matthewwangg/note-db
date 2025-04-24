@@ -17,6 +17,7 @@ bool HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
 bool HandleInitCommand(const std::vector<std::string>& args);
 bool HandleListCommand(NoteManager& manager);
 bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
