@@ -17,6 +17,22 @@ void CreateUniqueTemplate(std::string editor, const std::filesystem::path& templ
     std::system(command.c_str());
 }
 
+void GenerateDailyTemplate(const std::filesystem::path& daily_template) {
+    std::ofstream out(daily_template);
+    if (out.is_open()) {
+        out << "# Title" << '\n'
+            << "This is a short description of what today's focus is" << '\n'
+            << " \n"
+            << "## Today's Agenda" << '\n'
+            << "- Item 1" << '\n'
+            << "- Item 2" << '\n'
+            << " \n"
+            << "## Notes" << '\n'
+            << " \n"
+            << "- Here is the start of the notes" << '\n';
+    }
+}
+
 void GenerateDefaultTemplate(const std::filesystem::path& default_template) {
     std::ofstream out(default_template);
     if (out.is_open()) {
@@ -38,6 +54,7 @@ void SetupTemplateDirectory(const std::vector<std::string>& args, const std::uno
     std::filesystem::create_directories(template_dir);
 
     GenerateDefaultTemplate(template_dir / "default.md");
+    GenerateDailyTemplate(template_dir / "daily.md");
 }
 
 }
