@@ -17,6 +17,7 @@ A C++ high-performance local knowledge base for managing Markdown notes with ful
 - `snapshot`: Save a snapshot of current note states.
 - `diff <snapshot>`: Compare current notes to a previous snapshot.
 - `template <filename>`: Create a new template Markdown file.
+- `run <command>`: Run a custom automation defined in `~/.note-db/commands.json`.
 - `help` / `--help`: Display usage guide.
 - `--version`: Display the current version.
 
@@ -115,6 +116,28 @@ Check version:
 ```bash
 note-db --version
 ```
+
+Run a custom workflow:
+
+```bash
+note-db run daily
+```
+
+> 💡 You can define custom commands in `.note-db/commands.json` and run them with `note-db run <command>`
+
+```json
+{
+  "daily": {
+    "description": "Create a new note for today using the daily template",
+    "steps": [
+      "new {{date}}.md --template daily --directory daily --editor none",
+      "tag {{date}}.md daily --directory daily",
+      "edit {{date}}.md daily --directory daily"
+    ]
+  }
+}
+```
+
 
 > 💡 You can also set the environment variable `NOTEDB_EDITOR` to change the default editor (defaults to `nano`):
 

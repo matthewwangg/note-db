@@ -13,20 +13,22 @@ namespace automation_utils {
 std::string ExpandCommandVariables(const std::string& input) {
     std::string result = input;
 
-    auto now = std::chrono::system_clock::now();
-    auto t = std::chrono::system_clock::to_time_t(now);
-    std::tm* tm = std::localtime(&t);
+    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::tm* tm = std::localtime(&now);
 
     char date_buf[11];
     std::strftime(date_buf, sizeof(date_buf), "%Y-%m-%d", tm);
-    std::string date(date_buf);
-    std::string timestamp = std::to_string(t);
+
+    std::string date = date_buf;
+    std::string timestamp = std::to_string(now);
 
     size_t pos;
-    while ((pos = result.find("{{date}}")) != std::string::npos)
+    while ((pos = result.find("{{date}}")) != std::string::npos) {
         result.replace(pos, 8, date);
-    while ((pos = result.find("{{timestamp}}")) != std::string::npos)
+    }
+    while ((pos = result.find("{{timestamp}}")) != std::string::npos) {
         result.replace(pos, 13, timestamp);
+    }
 
     return result;
 }
