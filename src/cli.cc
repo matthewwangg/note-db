@@ -3,12 +3,14 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "index.h"
 #include "snapshot.h"
+#include "utils/automation_utils.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
@@ -81,10 +83,11 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
         result = HandleTagCommand(manager, args);
     } else if (command == "template") {
         result = HandleTemplateCommand(manager, args);
+    } else if (command == "run") {
+        result = HandleRunCommand(manager, args);
     } else {
         display_utils::PrintError("Unsupported command: " + command);
         HandleHelpCommand();
-        return false;
     }
 
     return result;
@@ -229,6 +232,7 @@ bool HandleInitCommand(const std::vector<std::string>& args) {
     }
 
     config_utils::SetupConfigFile(args, flag_map);
+    automation_utils::SetupBasicCommandFile();
     template_utils::SetupTemplateDirectory(args, flag_map);
     snapshot_utils::SetupSnapshotDirectory(args, flag_map);
 
@@ -272,6 +276,39 @@ bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     manager.CreateNote(normalized_args, flag_map);
 
     display_utils::PrintSuccess("Note " + normalized_filename + " successfully created!");
+    return true;
+}
+
+bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        display_utils::PrintError("Invalid usage of command run!");
+        display_utils::PrintInfo("Proper Usage: note-db run <command>");
+        return false;
+    }
+
+    std::optional<CommandDefinition> command = automation_utils::LoadCommandByName(args[0]);
+    if (!command) {
+        display_utils::PrintError("Command " + args[0] + " not found!");
+        return false;
+    }
+
+    for (const std::string& command_str : command->steps) {
+        std::istringstream stream(command_str);
+        std::vector<std::string> command_args;
+        std::string token;
+
+        while (stream >> token) {
+            command_args.push_back(token);
+        }
+
+        bool successful = DispatchCommand(command_args);
+
+        if (!successful) {
+            display_utils::PrintError("Command " + command_str + " failed during execution, please fix accordingly.");
+            return false;
+        }
+    }
+
     return true;
 }
 

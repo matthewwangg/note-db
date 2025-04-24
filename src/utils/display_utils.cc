@@ -32,6 +32,7 @@ void PrintCommands() {
               << "  tag <filename> <tag>     Add a tag to a note" << std::endl
               << "  import <filepath>        Import a note" << std::endl
               << "  template <filename>      Create a new template" << std::endl
+              << "  run <command>            Run a custom command" << std::endl
               << "  help                     Show this message" << std::endl;
 }
 
