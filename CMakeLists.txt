@@ -17,6 +17,7 @@ add_library(note_db_lib
         src/utils/command_utils.cc
         src/utils/search_utils.cc
         src/utils/snapshot_utils.cc
+        src/utils/automation_utils.cc
 )
 
 target_include_directories(note_db_lib PRIVATE include)
