@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace command_utils {
@@ -15,8 +16,26 @@ std::unordered_map<std::string, std::string> ExtractFlagMap(const std::vector<st
 std::unordered_map<std::string, std::string> ParseFlags(const std::vector<std::string>& flags) {
     std::unordered_map<std::string, std::string> flag_map = {};
 
-    for (int i = 0; i + 1 < flags.size(); i = i + 2) {
-        flag_map[flags[i]] = flags[i+1];
+    const std::unordered_set<std::string> value_flags = { "--editor", "--template", "--directory", "--tag", "--limit", "--sort-by" };
+    const std::unordered_set<std::string> boolean_flags = { "--overwrite" };
+
+    for (size_t i = 0; i < flags.size(); i++) {
+        const std::string& flag = flags[i];
+
+        if (flag_map.find(flag) != flag_map.end()) {
+            continue;
+        }
+
+        if (value_flags.count(flag)) {
+            if (i + 1 < flags.size() && flags[i + 1].rfind("--", 0) != 0) {
+                flag_map[flag] = flags[i + 1];
+                i++;
+            }
+        } else if (boolean_flags.count(flag)) {
+            flag_map[flag] = "true";
+        } else {
+            continue;
+        }
     }
 
     return flag_map;

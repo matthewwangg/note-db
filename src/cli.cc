@@ -179,7 +179,7 @@ void HandleHelpCommand() {
 bool HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         display_utils::PrintError("Invalid usage of command import!");
-        display_utils::PrintInfo("Proper Usage: note-db import <filepath> [--overwrite <true/false>] [--directory <folder>]");
+        display_utils::PrintInfo("Proper Usage: note-db import <filepath> [--overwrite] [--directory <folder>]");
         return false;
     }
 
@@ -244,7 +244,7 @@ bool HandleListCommand(NoteManager& manager) {
 bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         display_utils::PrintError("Invalid usage of command new!");
-        display_utils::PrintInfo("Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite <true/false>] [--directory <folder>]");
+        display_utils::PrintInfo("Proper Usage: note-db new <filename> [--template <name>] [--editor <editor>] [--overwrite] [--directory <folder>]");
         return false;
     }
 

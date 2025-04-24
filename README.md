@@ -77,7 +77,7 @@ note-db tag my-note.md c++
 Import an existing file:
 
 ```bash
-note-db import ~/Downloads/lecture.md --overwrite true
+note-db import ~/Downloads/lecture.md --overwrite
 ```
 
 Search notes:

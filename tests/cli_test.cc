@@ -128,7 +128,7 @@ TEST_F(CliTest, NewCommandFailsWithoutArgs) {
 
 TEST_F(CliTest, NewCommandFailsIfAlreadyExistsWithoutOverwrite) {
     cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});
-    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});  // no --overwrite
+    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("already exists"), std::string::npos);
