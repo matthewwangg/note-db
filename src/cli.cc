@@ -230,6 +230,7 @@ bool HandleInitCommand(const std::vector<std::string>& args) {
     }
 
     config_utils::SetupConfigFile(args, flag_map);
+    config_utils::SetupBasicCommandFile();
     template_utils::SetupTemplateDirectory(args, flag_map);
     snapshot_utils::SetupSnapshotDirectory(args, flag_map);
 

@@ -10,6 +10,7 @@ namespace config_utils {
 
 std::filesystem::path GetHomeDirectory();
 std::string LoadNotesDirectory();
+void SetupBasicCommandFile();
 void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
 
 } // namespace config_utils
