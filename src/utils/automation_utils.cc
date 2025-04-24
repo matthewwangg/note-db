@@ -50,4 +50,29 @@ std::optional<CommandDefinition> LoadCommandByName(const std::string& name) {
     return (!command.steps.empty()) ? std::optional{command} : std::nullopt;
 }
 
+void SetupBasicCommandFile() {
+    std::filesystem::path home_directory = config_utils::GetHomeDirectory();
+    std::filesystem::path config_dir = home_directory / ".note-db";
+
+    std::ofstream out(config_dir / "commands.json");
+
+    out << "{\n"
+        << "  \"daily\": {\n"
+        << "    \"description\": \"Create a new note for today using the daily template\",\n"
+        << "    \"steps\": [\n"
+        << "      \"new {{date}}.md --template daily --directory daily --editor none\",\n"
+        << "      \"tag {{date}}.md daily --directory daily\",\n"
+        << "      \"edit {{date}}.md daily --directory daily\"\n"
+        << "    ]\n"
+        << "  },\n"
+        << "  \"scratch\": {\n"
+        << "    \"description\": \"Quickly start a blank note for thinking or testing\",\n"
+        << "    \"steps\": [\n"
+        << "      \"new scratch-{{timestamp}}.md --template default --directory notes --editor none\",\n"
+        << "      \"edit scratch-{{timestamp}}.md --directory notes\"\n"
+        << "    ]\n"
+        << "  }\n"
+        << "}\n";
+}
+
 } // namespace automation_utils

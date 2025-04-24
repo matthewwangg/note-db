@@ -47,30 +47,6 @@ std::string LoadNotesDirectory() {
     return "";
 }
 
-void SetupBasicCommandFile() {
-    std::filesystem::path home_directory = GetHomeDirectory();
-    std::filesystem::path config_dir = home_directory / ".note-db";
-
-    std::ofstream out(config_dir / "commands.json");
-
-    out << "{\n"
-        << "  \"daily\": {\n"
-        << "    \"description\": \"Create a new note for today using the daily template\",\n"
-        << "    \"steps\": [\n"
-        << "      \"new {{date}}.md --template daily --directory daily\",\n"
-        << "      \"tag {{date}}.md daily\"\n"
-        << "    ]\n"
-        << "  },\n"
-        << "  \"scratch\": {\n"
-        << "    \"description\": \"Quickly start a blank note for thinking or testing\",\n"
-        << "    \"steps\": [\n"
-        << "      \"new scratch-{{timestamp}}.md --template default\",\n"
-        << "      \"edit scratch-{{timestamp}}.md\"\n"
-        << "    ]\n"
-        << "  }\n"
-        << "}\n";
-}
-
 void SetupConfigFile(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {
     std::filesystem::path home_directory = GetHomeDirectory();
     std::filesystem::path config_dir = home_directory / ".note-db";
