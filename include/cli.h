@@ -8,19 +8,19 @@
 
 namespace cli {
 
-void DispatchCommand(const std::vector<std::string>& tokens);
-void HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool DispatchCommand(const std::vector<std::string>& tokens);
+bool HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args);
 void HandleHelpCommand();
-void HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleInitCommand(const std::vector<std::string>& args);
-void HandleListCommand(NoteManager& manager);
-void HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
-void HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleImportCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleInitCommand(const std::vector<std::string>& args);
+bool HandleListCommand(NoteManager& manager);
+bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleTagCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>& args);
 
 } // namespace cli
 
