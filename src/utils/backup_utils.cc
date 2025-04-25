@@ -68,7 +68,7 @@ void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem
     }
 }
 
-void SaveBackup(const std::filesystem::path& notes_dir) {
+time_t SaveBackup(const std::filesystem::path& notes_dir) {
     auto now = std::time(nullptr);
     std::ofstream out(notes_dir / ".backups" / (std::to_string(now) + ".json"));
 
@@ -93,6 +93,8 @@ void SaveBackup(const std::filesystem::path& notes_dir) {
             << "  }";
     }
     out << "\n]\n";
+
+    return now;
 }
 
 void SetupBackupDirectory(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map) {

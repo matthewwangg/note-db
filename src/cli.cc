@@ -104,9 +104,10 @@ bool HandleBackupCommand(NoteManager& manager, const std::vector<std::string>& a
         display_utils::PrintInfo("Proper Usage: note-db backup");
         return false;
     }
-    backup_utils::SaveBackup(manager.GetNotesDirectory());
 
-    display_utils::PrintSuccess("Backup created successfully.");
+    time_t time = backup_utils::SaveBackup(manager.GetNotesDirectory());
+
+    display_utils::PrintSuccess("Backup " + std::to_string(time) + ".json created successfully.");
     return true;
 }
 
