@@ -11,6 +11,7 @@
 #include "index.h"
 #include "snapshot.h"
 #include "utils/automation_utils.h"
+#include "utils/backup_utils.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
@@ -83,6 +84,10 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
         result = HandleTagCommand(manager, args);
     } else if (command == "template") {
         result = HandleTemplateCommand(manager, args);
+    } else if (command == "backup") {
+        result = HandleBackupCommand(manager, args);
+    } else if (command == "restore") {
+        result = HandleRestoreCommand(manager, args);
     } else if (command == "run") {
         result = HandleRunCommand(manager, args);
     } else {
@@ -91,6 +96,19 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
     }
 
     return result;
+}
+
+bool HandleBackupCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (!args.empty()) {
+        display_utils::PrintError("Invalid usage of command backup!");
+        display_utils::PrintInfo("Proper Usage: note-db backup");
+        return false;
+    }
+
+    time_t time = backup_utils::SaveBackup(manager.GetNotesDirectory());
+
+    display_utils::PrintSuccess("Backup " + std::to_string(time) + ".json created successfully.");
+    return true;
 }
 
 bool HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -235,6 +253,7 @@ bool HandleInitCommand(const std::vector<std::string>& args) {
     automation_utils::SetupBasicCommandFile();
     template_utils::SetupTemplateDirectory(args, flag_map);
     snapshot_utils::SetupSnapshotDirectory(args, flag_map);
+    backup_utils::SetupBackupDirectory(args, flag_map);
 
     display_utils::PrintSuccess("Directory " + args[0] + " successfully initialized!");
     return true;
@@ -276,6 +295,25 @@ bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     manager.CreateNote(normalized_args, flag_map);
 
     display_utils::PrintSuccess("Note " + normalized_filename + " successfully created!");
+    return true;
+}
+
+bool HandleRestoreCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        display_utils::PrintError("Invalid usage of command restore!");
+        display_utils::PrintInfo("Proper Usage: note-db restore <backup-name>");
+        return false;
+    }
+
+    std::filesystem::path backup_file = manager.GetNotesDirectory() / ".backups" / args[0];
+    if (!std::filesystem::exists(backup_file)) {
+        display_utils::PrintError("Backup file " + backup_file.string() + " not found!");
+        return false;
+    }
+
+    backup_utils::RestoreBackup(manager.GetNotesDirectory(), backup_file);
+
+    display_utils::PrintSuccess("Backup restored successfully.");
     return true;
 }
 

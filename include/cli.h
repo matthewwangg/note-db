@@ -9,6 +9,7 @@
 namespace cli {
 
 bool DispatchCommand(const std::vector<std::string>& tokens);
+bool HandleBackupCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleEditCommand(NoteManager& manager, const std::vector<std::string>& args);
@@ -17,6 +18,7 @@ bool HandleImportCommand(NoteManager& manager, const std::vector<std::string>& a
 bool HandleInitCommand(const std::vector<std::string>& args);
 bool HandleListCommand(NoteManager& manager);
 bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args);
+bool HandleRestoreCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleSearchCommand(NoteManager& manager, const std::vector<std::string>& args);
 bool HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>& args);
