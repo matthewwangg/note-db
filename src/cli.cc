@@ -104,6 +104,9 @@ bool HandleBackupCommand(NoteManager& manager, const std::vector<std::string>& a
         display_utils::PrintInfo("Proper Usage: note-db backup");
         return false;
     }
+    backup_utils::SaveBackup(manager.GetNotesDirectory());
+
+    display_utils::PrintSuccess("Backup created successfully.");
     return true;
 }
 
@@ -300,6 +303,16 @@ bool HandleRestoreCommand(NoteManager& manager, const std::vector<std::string>& 
         display_utils::PrintInfo("Proper Usage: note-db restore <backup-name>");
         return false;
     }
+
+    std::filesystem::path backup_file = manager.GetNotesDirectory() / ".backups" / args[0];
+    if (!std::filesystem::exists(backup_file)) {
+        display_utils::PrintError("Backup file " + backup_file.string() + " not found!");
+        return false;
+    }
+
+    backup_utils::RestoreBackup(manager.GetNotesDirectory(), backup_file);
+
+    display_utils::PrintSuccess("Backup restored successfully.");
     return true;
 }
 

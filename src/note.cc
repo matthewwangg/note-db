@@ -61,8 +61,6 @@ Note Note::FromString(const std::string& str, const std::string& filename) {
     return note;
 }
 
-
-
 Note Note::LoadFromFile(const std::filesystem::path& path) {
     Note note;
     note.filename = path.filename().string();

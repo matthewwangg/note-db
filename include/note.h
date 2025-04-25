@@ -14,7 +14,7 @@ struct Note {
     std::chrono::system_clock::time_point created;
     std::chrono::system_clock::time_point updated;
 
-    Note FromString(const std::string& str, const std::string& filename);
+    static Note FromString(const std::string& str, const std::string& filename);
     static Note LoadFromFile(const std::filesystem::path& path);
     void SaveToFile(const std::filesystem::path& path) const;
     std::string ToString() const;
