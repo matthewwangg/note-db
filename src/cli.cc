@@ -21,7 +21,7 @@
 
 namespace cli {
 
-bool DispatchCommand(const std::vector<std::string>& command_args) {
+bool DispatchCommand(const std::vector<std::string>& command_args, bool automated) {
     if (command_args.empty()) {
         HandleHelpCommand();
         return false;
@@ -89,7 +89,7 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
     } else if (command == "restore") {
         result = HandleRestoreCommand(manager, args);
     } else if (command == "run") {
-        result = HandleRunCommand(manager, args);
+        result = HandleRunCommand(manager, args, automated);
     } else {
         display_utils::PrintError("Unsupported command: " + command);
         HandleHelpCommand();
@@ -317,10 +317,15 @@ bool HandleRestoreCommand(NoteManager& manager, const std::vector<std::string>& 
     return true;
 }
 
-bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args) {
+bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args, bool automated) {
     if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
         display_utils::PrintError("Invalid usage of command run!");
         display_utils::PrintInfo("Proper Usage: note-db run <command>");
+        return false;
+    }
+
+    if (automated) {
+        display_utils::PrintError("Calling a run command from a custom command is not allowed!");
         return false;
     }
 
@@ -339,7 +344,7 @@ bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args
             command_args.push_back(token);
         }
 
-        bool successful = DispatchCommand(command_args);
+        bool successful = DispatchCommand(command_args, true);
 
         if (!successful) {
             display_utils::PrintError("Command " + command_str + " failed during execution, please fix accordingly.");

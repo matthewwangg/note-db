@@ -22,7 +22,7 @@ void ManagerTest::SetUp() {
     test_directory_ = std::filesystem::current_path() / ".." / "tests" / "temp";
     std::filesystem::remove_all(test_directory_);
     std::filesystem::create_directory(test_directory_);
-    cli::DispatchCommand({"init", test_directory_.string()});
+    cli::DispatchCommand({"init", test_directory_.string()}, false);
 }
 
 void ManagerTest::TearDown() {
@@ -36,7 +36,7 @@ TEST_F(ManagerTest, NewCommandCreatesFile) {
 
     ASSERT_FALSE(std::filesystem::exists(expected_path));
 
-    cli::DispatchCommand({"new", filename, "--editor", "none"});
+    cli::DispatchCommand({"new", filename, "--editor", "none"}, false);
 
     EXPECT_TRUE(std::filesystem::exists(expected_path));
 }
@@ -45,14 +45,14 @@ TEST_F(ManagerTest, EditCommandUpdatesFile) {
     std::string filename = "test_edit.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
-    cli::DispatchCommand({"new", filename, "--editor", "none"});
+    cli::DispatchCommand({"new", filename, "--editor", "none"}, false);
 
     ASSERT_TRUE(std::filesystem::exists(expected_path));
 
     auto original_write_time = std::filesystem::last_write_time(expected_path);
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    cli::DispatchCommand({"edit", filename, "--editor", "none"});
+    cli::DispatchCommand({"edit", filename, "--editor", "none"}, false);
     auto new_write_time = std::filesystem::last_write_time(expected_path);
 
     EXPECT_GT(new_write_time, original_write_time);
@@ -62,11 +62,11 @@ TEST_F(ManagerTest, DeleteCommandRemovesFile) {
     std::string filename = "test_delete.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
-    cli::DispatchCommand({"new", filename, "--editor", "none"});
+    cli::DispatchCommand({"new", filename, "--editor", "none"}, false);
 
     ASSERT_TRUE(std::filesystem::exists(expected_path));
 
-    cli::DispatchCommand({"delete", filename});
+    cli::DispatchCommand({"delete", filename}, false);
 
     EXPECT_FALSE(std::filesystem::exists(expected_path));
 }
@@ -75,11 +75,11 @@ TEST_F(ManagerTest, TagCommandTagsFile) {
     std::string filename = "test_tag.md";
     std::filesystem::path expected_path = test_directory_ / filename;
 
-    cli::DispatchCommand({"new", filename, "--editor", "none"});
+    cli::DispatchCommand({"new", filename, "--editor", "none"}, false);
 
     ASSERT_TRUE(std::filesystem::exists(expected_path));
 
-    cli::DispatchCommand({"tag", filename, "tag1"});
+    cli::DispatchCommand({"tag", filename, "tag1"}, false);
 
     Note note = Note::LoadFromFile(expected_path);
 

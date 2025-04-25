@@ -39,7 +39,7 @@ std::string CliTest::ReadOutput() {
 }
 
 TEST_F(CliTest, HelpCommandPrintsCommands) {
-    cli::DispatchCommand({"help"});
+    cli::DispatchCommand({"help"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("new"), std::string::npos);
@@ -48,8 +48,8 @@ TEST_F(CliTest, HelpCommandPrintsCommands) {
 }
 
 TEST_F(CliTest, InitCommandPrintsSuccess) {
-    cli::DispatchCommand({"init", "notes"});
-    cli::DispatchCommand({"init", "cli_test_dir"});
+    cli::DispatchCommand({"init", "notes"}, false);
+    cli::DispatchCommand({"init", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully initialized"), std::string::npos);
@@ -58,7 +58,7 @@ TEST_F(CliTest, InitCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, NewCommandPrintsSuccess) {
-    cli::DispatchCommand({"new", "test.md", "--editor", "none", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"new", "test.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully created"), std::string::npos);
@@ -67,8 +67,8 @@ TEST_F(CliTest, NewCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, EditCommandPrintsSuccess) {
-    cli::DispatchCommand({"new", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"});
-    cli::DispatchCommand({"edit", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"new", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
+    cli::DispatchCommand({"edit", "edit_test.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully edited"), std::string::npos);
@@ -77,8 +77,8 @@ TEST_F(CliTest, EditCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, DeleteCommandPrintsSuccess) {
-    cli::DispatchCommand({"new", "delete_test.md", "--editor", "none", "--directory", "cli_test_dir"});
-    cli::DispatchCommand({"delete", "delete_test.md", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"new", "delete_test.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
+    cli::DispatchCommand({"delete", "delete_test.md", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully deleted"), std::string::npos);
@@ -87,8 +87,8 @@ TEST_F(CliTest, DeleteCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, TagCommandPrintsSuccess) {
-    cli::DispatchCommand({"new", "tag_test.md", "--editor", "none", "--directory", "cli_test_dir"});
-    cli::DispatchCommand({"tag", "tag_test.md", "testtag", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"new", "tag_test.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
+    cli::DispatchCommand({"tag", "tag_test.md", "testtag", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully tagged"), std::string::npos);
@@ -97,7 +97,7 @@ TEST_F(CliTest, TagCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, SnapshotCommandPrintsSuccess) {
-    cli::DispatchCommand({"snapshot"});
+    cli::DispatchCommand({"snapshot"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully saved"), std::string::npos);
@@ -110,7 +110,7 @@ TEST_F(CliTest, ImportCommandPrintsSuccess) {
     test_file << "# Imported Note\n";
     test_file.close();
 
-    cli::DispatchCommand({"import", "temp_import.md", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"import", "temp_import.md", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("successfully imported"), std::string::npos);
@@ -120,15 +120,15 @@ TEST_F(CliTest, ImportCommandPrintsSuccess) {
 }
 
 TEST_F(CliTest, NewCommandFailsWithoutArgs) {
-    cli::DispatchCommand({"new"});
+    cli::DispatchCommand({"new"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Invalid usage of command new!"), std::string::npos);
 }
 
 TEST_F(CliTest, NewCommandFailsIfAlreadyExistsWithoutOverwrite) {
-    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});
-    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
+    cli::DispatchCommand({"new", "dupe.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("already exists"), std::string::npos);
@@ -137,7 +137,7 @@ TEST_F(CliTest, NewCommandFailsIfAlreadyExistsWithoutOverwrite) {
 }
 
 TEST_F(CliTest, EditCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"edit", "ghost.md", "--editor", "none", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"edit", "ghost.md", "--editor", "none", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("doesn't exist yet"), std::string::npos);
@@ -146,7 +146,7 @@ TEST_F(CliTest, EditCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, DeleteCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"delete", "ghost.md", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"delete", "ghost.md", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("doesn't exist"), std::string::npos);
@@ -155,7 +155,7 @@ TEST_F(CliTest, DeleteCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, TagCommandFailsWithMissingArgs) {
-    cli::DispatchCommand({"tag", "missing_tag.md", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"tag", "missing_tag.md", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Invalid usage of command tag!"), std::string::npos);
@@ -164,7 +164,7 @@ TEST_F(CliTest, TagCommandFailsWithMissingArgs) {
 }
 
 TEST_F(CliTest, TagCommandFailsIfNoteDoesNotExist) {
-    cli::DispatchCommand({"tag", "ghost.md", "sometag", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"tag", "ghost.md", "sometag", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("doesn't exist yet"), std::string::npos);
@@ -173,7 +173,7 @@ TEST_F(CliTest, TagCommandFailsIfNoteDoesNotExist) {
 }
 
 TEST_F(CliTest, SnapshotCommandFailsWithExtraArgs) {
-    cli::DispatchCommand({"snapshot", "unexpected_arg"});
+    cli::DispatchCommand({"snapshot", "unexpected_arg"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Invalid usage of command snapshot!"), std::string::npos);
@@ -182,7 +182,7 @@ TEST_F(CliTest, SnapshotCommandFailsWithExtraArgs) {
 }
 
 TEST_F(CliTest, DiffCommandFailsWithoutArgs) {
-    cli::DispatchCommand({"diff"});
+    cli::DispatchCommand({"diff"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Invalid usage of command diff!"), std::string::npos);
@@ -191,7 +191,7 @@ TEST_F(CliTest, DiffCommandFailsWithoutArgs) {
 }
 
 TEST_F(CliTest, ImportCommandFailsWithMissingFile) {
-    cli::DispatchCommand({"import", "no_such_file.md", "--directory", "cli_test_dir"});
+    cli::DispatchCommand({"import", "no_such_file.md", "--directory", "cli_test_dir"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("File doesn't exist"), std::string::npos);
@@ -200,14 +200,14 @@ TEST_F(CliTest, ImportCommandFailsWithMissingFile) {
 }
 
 TEST_F(CliTest, ImportCommandFailsWithoutArgs) {
-    cli::DispatchCommand({"import"});
+    cli::DispatchCommand({"import"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Invalid usage of command import!"), std::string::npos);
 }
 
 TEST_F(CliTest, UnknownCommandPrintsHelp) {
-    cli::DispatchCommand({"nonexistentcommand"});
+    cli::DispatchCommand({"nonexistentcommand"}, false);
     std::string contents = ReadOutput();
 
     EXPECT_NE(contents.find("Unsupported command"), std::string::npos);
