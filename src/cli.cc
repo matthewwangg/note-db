@@ -83,6 +83,10 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
         result = HandleTagCommand(manager, args);
     } else if (command == "template") {
         result = HandleTemplateCommand(manager, args);
+    } else if (command == "backup") {
+        result = HandleBackupCommand(manager, args);
+    } else if (command == "restore") {
+        result = HandleRestoreCommand(manager, args);
     } else if (command == "run") {
         result = HandleRunCommand(manager, args);
     } else {
@@ -91,6 +95,15 @@ bool DispatchCommand(const std::vector<std::string>& command_args) {
     }
 
     return result;
+}
+
+bool HandleBackupCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (!args.empty()) {
+        display_utils::PrintError("Invalid usage of command backup!");
+        display_utils::PrintInfo("Proper Usage: note-db backup");
+        return false;
+    }
+    return true;
 }
 
 bool HandleDeleteCommand(NoteManager& manager, const std::vector<std::string>& args) {
@@ -276,6 +289,15 @@ bool HandleNewCommand(NoteManager& manager, const std::vector<std::string>& args
     manager.CreateNote(normalized_args, flag_map);
 
     display_utils::PrintSuccess("Note " + normalized_filename + " successfully created!");
+    return true;
+}
+
+bool HandleRestoreCommand(NoteManager& manager, const std::vector<std::string>& args) {
+    if (args.empty() || !command_utils::ValidateArgs(args, 1)) {
+        display_utils::PrintError("Invalid usage of command restore!");
+        display_utils::PrintInfo("Proper Usage: note-db restore <backup-name>");
+        return false;
+    }
     return true;
 }
 
