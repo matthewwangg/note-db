@@ -11,6 +11,7 @@
 #include "index.h"
 #include "snapshot.h"
 #include "utils/automation_utils.h"
+#include "utils/backup_utils.h"
 #include "utils/command_utils.h"
 #include "utils/config_utils.h"
 #include "utils/display_utils.h"
@@ -248,6 +249,7 @@ bool HandleInitCommand(const std::vector<std::string>& args) {
     automation_utils::SetupBasicCommandFile();
     template_utils::SetupTemplateDirectory(args, flag_map);
     snapshot_utils::SetupSnapshotDirectory(args, flag_map);
+    backup_utils::SetupBackupDirectory(args, flag_map);
 
     display_utils::PrintSuccess("Directory " + args[0] + " successfully initialized!");
     return true;
