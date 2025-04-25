@@ -11,6 +11,63 @@
 
 namespace backup_utils {
 
+void ClearNotesDirectory(const std::filesystem::path& notes_dir) {
+    const std::unordered_set<std::string> keep_dirs = { ".templates", ".snapshot", ".backups" };
+
+    for (const auto& entry : std::filesystem::directory_iterator(notes_dir)) {
+        std::string name = entry.path().filename().string();
+
+        bool should_keep = false;
+        for (const std::string& keep : keep_dirs) {
+            if (name == keep) {
+                should_keep = true;
+                break;
+            }
+        }
+
+        if (should_keep) {
+            continue;
+        }
+
+        if (entry.is_directory()) {
+            std::filesystem::remove_all(entry.path());
+        } else {
+            std::filesystem::remove(entry.path());
+        }
+    }
+}
+
+void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem::path& backup_file) {
+    ClearNotesDirectory(notes_dir);
+
+    std::ifstream in(backup_file);
+    if (!in.is_open()) {
+        return;
+    }
+
+    std::string token;
+    while (in >> token) {
+        if (token == "{") {
+            std::string path_key;
+            std::string content_key;
+            std::string rel_path;
+            std::string content_str;
+
+            in >> path_key >> std::quoted(rel_path) >> token;
+            in >> content_key >> std::quoted(content_str);
+
+            std::filesystem::path full_path = notes_dir / rel_path;
+            std::filesystem::create_directories(full_path.parent_path());
+
+            Note note = Note::FromString(content_str, full_path.filename().string());
+            std::ofstream out(full_path);
+            if (out.is_open()) {
+                out << note.ToString();
+            }
+        }
+    }
+}
+
 void SaveBackup(const std::filesystem::path& notes_dir) {
     auto now = std::time(nullptr);
     std::ofstream out(notes_dir / ".backups" / (std::to_string(now) + ".json"));
@@ -42,35 +99,6 @@ void SetupBackupDirectory(const std::vector<std::string>& args, const std::unord
     std::filesystem::path notes_dir = args[0];
     std::filesystem::path backup_dir = notes_dir / ".backups";
     std::filesystem::create_directories(backup_dir);
-}
-
-void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem::path& backup_file) {
-    std::ifstream in(backup_file);
-    if (!in.is_open()) {
-        return;
-    }
-
-    std::string token;
-    while (in >> token) {
-        if (token == "{") {
-            std::string path_key;
-            std::string content_key;
-            std::string rel_path;
-            std::string content_str;
-
-            in >> path_key >> std::quoted(rel_path) >> token;
-            in >> content_key >> std::quoted(content_str);
-
-            std::filesystem::path full_path = notes_dir / rel_path;
-            std::filesystem::create_directories(full_path.parent_path());
-
-            Note note = Note::FromString(content_str, full_path.filename().string());
-            std::ofstream out(full_path);
-            if (out.is_open()) {
-                out << note.ToString();
-            }
-        }
-    }
 }
 
 } // namespace backup_utils
