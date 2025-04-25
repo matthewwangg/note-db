@@ -30,7 +30,7 @@ void NoteManager::CreateNote(const std::vector<std::string>& args, const std::un
 
     Note new_note = {filename, title, "", {}, std::chrono::system_clock::now(), std::chrono::system_clock::now()};
     if (!flag_map.empty() && flag_map.find("--template") != flag_map.end()) {
-        new_note.content = Note::LoadFromFile(notes_directory_ / "templates" / (flag_map.at("--template") + ".md")).content;
+        new_note.content = Note::LoadFromFile(notes_directory_ / ".templates" / (flag_map.at("--template") + ".md")).content;
     }
     std::filesystem::path path = command_utils::ResolveDirectory(notes_directory_, flag_map);
     std::filesystem::create_directories(path);

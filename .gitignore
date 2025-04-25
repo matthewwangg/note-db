@@ -39,3 +39,4 @@
 /.note-db
 /tests/temp/
 /cli_test_dir
+/vault

@@ -129,16 +129,16 @@ bool HandleDiffCommand(NoteManager& manager, const std::vector<std::string>& arg
         return false;
     }
 
-    Snapshot current_snapshot(manager.GetNotesDirectory() / "snapshots");
+    Snapshot current_snapshot(manager.GetNotesDirectory() / ".snapshots");
     current_snapshot.Generate(manager.GetNotesDirectory());
 
-    std::filesystem::path path = manager.GetNotesDirectory() / "snapshots" / args[0];
+    std::filesystem::path path = manager.GetNotesDirectory() / ".snapshots" / args[0];
     if (path.extension().string() != ".json" || !std::filesystem::exists(path)) {
         display_utils::PrintError("This is not a valid snapshot file! Please try again with a valid snapshot!");
         return false;
     }
 
-    Snapshot previous_snapshot(manager.GetNotesDirectory() / "snapshots");
+    Snapshot previous_snapshot(manager.GetNotesDirectory() / ".snapshots");
     previous_snapshot.LoadFromFile(path);
 
     current_snapshot.Diff(previous_snapshot);
@@ -337,7 +337,7 @@ bool HandleSnapshotCommand(NoteManager& manager, const std::vector<std::string>&
         return false;
     }
 
-    Snapshot snapshot(manager.GetNotesDirectory() / "snapshots");
+    Snapshot snapshot(manager.GetNotesDirectory() / ".snapshots");
     snapshot.Generate(manager.GetNotesDirectory());
     time_t timestamp = snapshot.SaveToFile();
     std::string snapshot_filename = std::to_string(timestamp) + ".json";
@@ -379,7 +379,7 @@ bool HandleTemplateCommand(NoteManager& manager, const std::vector<std::string>&
     }
 
     std::string normalized_filename = input_validation_utils::NormalizeFilename(args[0]);
-    std::filesystem::path template_path = manager.GetNotesDirectory() / "templates" / normalized_filename;
+    std::filesystem::path template_path = manager.GetNotesDirectory() / ".templates" / normalized_filename;
 
     if (std::filesystem::exists(template_path)) {
         display_utils::PrintError("Template " + normalized_filename + " already exists!");

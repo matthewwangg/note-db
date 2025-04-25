@@ -6,7 +6,7 @@ A C++ high-performance local knowledge base for managing Markdown notes with ful
 
 ## 🧰 Features
 
-- `init <directory>`: Initialize a notes directory with config, templates, and snapshot structure.
+- `init <directory>`: Initialize a notes directory with .templates and .snapshots, and setup config/commands.json.
 - `new <filename>`: Create a new note with optional flags (`--template`, `--editor`, `--overwrite`, `--directory`).
 - `edit <filename>`: Open a note in your editor and update its metadata (`--editor`, `--directory`).
 - `delete <filename>`: Delete a note (`--directory`).
