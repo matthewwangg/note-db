@@ -335,19 +335,11 @@ bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args
         return false;
     }
 
+    time_t time = backup_utils::SaveBackup(manager.GetNotesDirectory());
     for (const std::string& command_str : command->steps) {
-        std::istringstream stream(command_str);
-        std::vector<std::string> command_args;
-        std::string token;
-
-        while (stream >> token) {
-            command_args.push_back(token);
-        }
-
-        bool successful = DispatchCommand(command_args, true);
-
-        if (!successful) {
+        if (!automation_utils::RunCommand(command_str)) {
             display_utils::PrintError("Command " + command_str + " failed during execution, please fix accordingly.");
+            backup_utils::RestoreBackup(manager.GetNotesDirectory(), std::to_string(time) + ".json");
             return false;
         }
     }

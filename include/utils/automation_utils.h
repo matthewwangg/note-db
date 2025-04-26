@@ -15,6 +15,7 @@ namespace automation_utils {
 
 std::string ExpandCommandVariables(const std::string& input);
 std::optional<CommandDefinition> LoadCommandByName(const std::string& name);
+bool RunCommand(const std::string& command_str);
 void SetupBasicCommandFile();
 
 }  // namespace automation_utils
