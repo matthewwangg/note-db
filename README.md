@@ -43,6 +43,18 @@ This script will:
 
 > 🔧 Requires: CMake 3.27+, a C++20-compatible compiler (e.g., GCC 11+ or Clang 13+)
 
+
+### Configuring Your Editor
+
+note-db uses your default terminal editor to open notes.  
+By default, it uses `nano`, but you can change it by setting an environment variable:
+
+    export NOTEDB_EDITOR=vim
+
+Supported editors include `vim`, `nano`, `nvim`, `code`, or any CLI-accessible editor.
+
+> 💡 If you set the `NOTEDB_EDITOR` environment variable, you do not need to pass `--editor` on each command.
+
 ---
 
 ## 🧪 Usage
@@ -57,12 +69,6 @@ Create a new note:
 
 ```bash
 note-db new my-note.md --template default --editor vim
-```
-
-> 💡 You can also set the environment variable `NOTEDB_EDITOR` to change the default editor (defaults to `nano`):
-
-```bash
-export NOTEDB_EDITOR=vim
 ```
 
 Edit a note:
@@ -116,7 +122,7 @@ note-db backup
 Restore notes from a backup:
 
 ```bash
-note-db restore 1713418010
+note-db restore 1713418010.json
 ```
 
 Create a new template:
@@ -187,9 +193,9 @@ Example contents:
 ```
 vault/
 ├── my-note.md
-├── templates/
+├── .templates/
 │   └── default.md
-├── snapshots/
+├── .snapshots/
 │   └── 1713418010.json
 └── .backups/
     └── 1713418010.json
@@ -212,15 +218,8 @@ This is the content of the note.
 ## 📦 Roadmap
 
 - [ ] Semantic search (e.g., embedding-based)
-- [ ] Archive/restore notes
 - [ ] Encrypted notes (e.g., GPG integration)
-- [ ] Git-based syncing or backup support
-
----
-
-## 🧠 Philosophy
-
-note-db is designed to be keyboard-first and scriptable — for developers who live in the terminal.
+- [ ] Git-based syncing
 
 ---
 
