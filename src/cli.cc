@@ -339,7 +339,10 @@ bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args
     for (const std::string& command_str : command->steps) {
         if (!automation_utils::RunCommand(command_str)) {
             display_utils::PrintError("Command " + command_str + " failed during execution, please fix accordingly.");
+            display_utils::PrintInfo("Rolling back the notes to their state before the command!");
+            display_utils::PrintInfo("Note that any changes in .backups, .templates, or .snapshots are not rolled back!");
             backup_utils::RestoreBackup(manager.GetNotesDirectory(), manager.GetNotesDirectory() / ".backups" / (std::to_string(time) + ".json"));
+            std::filesystem::remove(manager.GetNotesDirectory() / ".backups" / (std::to_string(time) + ".json"));
             return false;
         }
     }
