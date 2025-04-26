@@ -12,7 +12,7 @@
 namespace backup_utils {
 
 void ClearNotesDirectory(const std::filesystem::path& notes_dir) {
-    const std::unordered_set<std::string> keep_dirs = { ".templates", ".snapshot", ".backups" };
+    const std::unordered_set<std::string> keep_dirs = { ".templates", ".snapshots", ".backups" };
 
     for (const auto& entry : std::filesystem::directory_iterator(notes_dir)) {
         std::string name = entry.path().filename().string();
@@ -37,6 +37,22 @@ void ClearNotesDirectory(const std::filesystem::path& notes_dir) {
     }
 }
 
+std::string Escape(const std::string& input) {
+    std::string out;
+    for (char c : input) {
+        if (c == '\\') {
+            out += "\\\\";
+        } else if (c == '\"') {
+            out += "\\\"";
+        } else if (c == '\n') {
+            out += "\\n";
+        } else {
+            out += c;
+        }
+    }
+    return out;
+}
+
 void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem::path& backup_file) {
     ClearNotesDirectory(notes_dir);
 
@@ -59,7 +75,8 @@ void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem
             std::filesystem::path full_path = notes_dir / rel_path;
             std::filesystem::create_directories(full_path.parent_path());
 
-            Note note = Note::FromString(content_str, full_path.filename().string());
+            std::string unescaped = Unescape(content_str);
+            Note note = Note::FromString(unescaped, full_path.filename().string());
             std::ofstream out(full_path);
             if (out.is_open()) {
                 out << note.ToString();
@@ -75,7 +92,7 @@ time_t SaveBackup(const std::filesystem::path& notes_dir) {
     out << "[\n";
     bool first = true;
     for (const auto& entry : std::filesystem::recursive_directory_iterator(notes_dir)) {
-        if (entry.path().extension() != ".md") {
+        if (entry.path().extension() != ".md" || entry.path().string().find(".templates") != std::string::npos) {
             continue;
         }
 
@@ -89,7 +106,7 @@ time_t SaveBackup(const std::filesystem::path& notes_dir) {
 
         out << "  {\n"
             << "    \"path\": " << std::quoted(rel) << ",\n"
-            << "    \"content\": " << std::quoted(note.ToString()) << "\n"
+            << "    \"content\": " << std::quoted(Escape(note.ToString())) << "\n"
             << "  }";
     }
     out << "\n]\n";
@@ -101,6 +118,30 @@ void SetupBackupDirectory(const std::vector<std::string>& args, const std::unord
     std::filesystem::path notes_dir = args[0];
     std::filesystem::path backup_dir = notes_dir / ".backups";
     std::filesystem::create_directories(backup_dir);
+}
+
+std::string Unescape(const std::string& input) {
+    std::string out;
+    for (size_t i = 0; i < input.size(); ++i) {
+        if (input[i] == '\\' && i + 1 < input.size()) {
+            char next = input[i + 1];
+            if (next == 'n') {
+                out += '\n';
+                ++i;
+            } else if (next == '\"') {
+                out += '\"';
+                ++i;
+            } else if (next == '\\') {
+                out += '\\';
+                ++i;
+            } else {
+                out += input[i];
+            }
+        } else {
+            out += input[i];
+        }
+    }
+    return out;
 }
 
 } // namespace backup_utils

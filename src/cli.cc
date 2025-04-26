@@ -339,7 +339,7 @@ bool HandleRunCommand(NoteManager& manager, const std::vector<std::string>& args
     for (const std::string& command_str : command->steps) {
         if (!automation_utils::RunCommand(command_str)) {
             display_utils::PrintError("Command " + command_str + " failed during execution, please fix accordingly.");
-            backup_utils::RestoreBackup(manager.GetNotesDirectory(), std::to_string(time) + ".json");
+            backup_utils::RestoreBackup(manager.GetNotesDirectory(), manager.GetNotesDirectory() / ".backups" / (std::to_string(time) + ".json"));
             return false;
         }
     }
