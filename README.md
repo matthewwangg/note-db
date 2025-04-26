@@ -1,6 +1,6 @@
 # note-db
 
-A C++ high-performance local knowledge base for managing Markdown notes with full-text search, tagging, snapshots, and more — all from your terminal.
+A C++ high-performance local knowledge base for managing Markdown notes with full-text search, tagging, snapshots, backups, and more — all from your terminal.
 
 ---
 
@@ -16,8 +16,10 @@ A C++ high-performance local knowledge base for managing Markdown notes with ful
 - `import <filepath>`: Import a Markdown file from elsewhere (`--overwrite`, `--directory`).
 - `snapshot`: Save a snapshot of current note states.
 - `diff <snapshot>`: Compare current notes to a previous snapshot.
+- `backup`: Save a full backup (content + metadata) of your notes.
+- `restore <timestamp>`: Restore your notes from a previous backup.
 - `template <filename>`: Create a new template Markdown file.
-- `run <command>`: Run a custom automation defined in `~/.note-db/commands.json`.
+- `run <command>`: Run a custom automation defined in `~/.note-db/commands.json`, with automatic rollback on failure.
 - `help` / `--help`: Display usage guide.
 - `--version`: Display the current version.
 
@@ -55,6 +57,12 @@ Create a new note:
 
 ```bash
 note-db new my-note.md --template default --editor vim
+```
+
+> 💡 You can also set the environment variable `NOTEDB_EDITOR` to change the default editor (defaults to `nano`):
+
+```bash
+export NOTEDB_EDITOR=vim
 ```
 
 Edit a note:
@@ -99,22 +107,22 @@ Diff with a previous snapshot:
 note-db diff 1713418010.json
 ```
 
+Backup all notes:
+
+```bash
+note-db backup
+```
+
+Restore notes from a backup:
+
+```bash
+note-db restore 1713418010
+```
+
 Create a new template:
+
 ```bash
 note-db template cs-patterns.md
-```
-
-Display help:
-
-```bash
-note-db help
-note-db --help
-```
-
-Check version:
-
-```bash
-note-db --version
 ```
 
 Run a custom workflow:
@@ -122,6 +130,8 @@ Run a custom workflow:
 ```bash
 note-db run daily
 ```
+
+> 💡 `run` automatically creates a backup before executing commands. If any step fails, note-db will roll back to the previous backup.
 
 > 💡 You can define custom commands in `.note-db/commands.json` and run them with `note-db run <command>`
 
@@ -139,10 +149,17 @@ note-db run daily
 ```
 
 
-> 💡 You can also set the environment variable `NOTEDB_EDITOR` to change the default editor (defaults to `nano`):
+Display help:
 
 ```bash
-export NOTEDB_EDITOR=vim
+note-db help
+note-db --help
+```
+
+Check version:
+
+```bash
+note-db --version
 ```
 
 ---
@@ -174,6 +191,8 @@ vault/
 │   └── default.md
 ├── snapshots/
 │   └── 1713418010.json
+└── .backups/
+    └── 1713418010.json
 ```
 
 Each note is a Markdown file with frontmatter:
@@ -207,3 +226,4 @@ note-db is designed to be keyboard-first and scriptable — for developers who l
 
 ## 🪪 License
 MIT © 2025 Matthew Wang
+

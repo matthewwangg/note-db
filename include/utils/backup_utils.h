@@ -9,9 +9,11 @@
 namespace backup_utils {
 
 void ClearNotesDirectory(const std::filesystem::path& notes_dir);
+std::string Escape(const std::string& input);
 void RestoreBackup(const std::filesystem::path& notes_dir, const std::filesystem::path& backup_file);
 time_t SaveBackup(const std::filesystem::path& notes_dir);
 void SetupBackupDirectory(const std::vector<std::string>& args, const std::unordered_map<std::string, std::string>& flag_map);
+std::string Unescape(const std::string& input);
 
 } // namespace backup_utils
 

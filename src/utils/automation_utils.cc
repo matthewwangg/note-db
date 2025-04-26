@@ -6,6 +6,7 @@
 #include <optional>
 #include <string>
 
+#include "cli.h"
 #include "utils/config_utils.h"
 
 namespace automation_utils {
@@ -73,6 +74,24 @@ std::optional<CommandDefinition> LoadCommandByName(const std::string& name) {
     }
 
     return (!command.steps.empty()) ? std::optional{command} : std::nullopt;
+}
+
+bool RunCommand(const std::string& command_str) {
+    std::istringstream stream(command_str);
+    std::vector<std::string> command_args;
+    std::string token;
+
+    while (stream >> token) {
+        command_args.push_back(token);
+    }
+
+    bool successful = cli::DispatchCommand(command_args, true);
+
+    if (!successful) {
+        return false;
+    }
+
+    return true;
 }
 
 void SetupBasicCommandFile() {
