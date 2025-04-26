@@ -4,7 +4,11 @@
 #include <string>
 
 #include "cli.h"
+#include "utils/automation_utils.h"
+#include "utils/backup_utils.h"
 #include "utils/config_utils.h"
+#include "utils/snapshot_utils.h"
+#include "utils/template_utils.h"
 
 class CliTest : public ::testing::Test {
 protected:
@@ -20,6 +24,10 @@ protected:
 void CliTest::SetUp() {
     saved_notes_directory_ = config_utils::LoadNotesDirectory();
     config_utils::SetupConfigFile({"cli_test_dir"}, {});
+    automation_utils::SetupBasicCommandFile();
+    template_utils::SetupTemplateDirectory({"cli_test_dir"}, {});
+    snapshot_utils::SetupSnapshotDirectory({"cli_test_dir"}, {});
+    backup_utils::SetupBackupDirectory({"cli_test_dir"}, {});
 
     out_.open("output.txt");
     original_buf_ = std::cout.rdbuf(out_.rdbuf());
@@ -119,6 +127,35 @@ TEST_F(CliTest, ImportCommandPrintsSuccess) {
     std::filesystem::remove_all("cli_test_dir");
 }
 
+TEST_F(CliTest, BackupCommandPrintsSuccess) {
+    cli::DispatchCommand({"backup"}, false);
+    std::string contents = ReadOutput();
+
+    EXPECT_NE(contents.find("Backup"), std::string::npos);
+    EXPECT_NE(contents.find("created successfully"), std::string::npos);
+
+    std::filesystem::remove_all("cli_test_dir");
+}
+
+TEST_F(CliTest, RestoreCommandPrintsSuccess) {
+    cli::DispatchCommand({"backup"}, false);
+
+    std::filesystem::path backup_file;
+    for (const auto& entry : std::filesystem::directory_iterator("cli_test_dir/.backups")) {
+        backup_file = entry.path().filename();
+    }
+
+    ASSERT_FALSE(backup_file.empty());
+
+    cli::DispatchCommand({"restore", backup_file.string()}, false);
+    std::string contents = ReadOutput();
+
+    EXPECT_NE(contents.find("Backup restored successfully"), std::string::npos);
+
+    std::filesystem::remove_all("cli_test_dir");
+}
+
+
 TEST_F(CliTest, NewCommandFailsWithoutArgs) {
     cli::DispatchCommand({"new"}, false);
     std::string contents = ReadOutput();
@@ -214,3 +251,5 @@ TEST_F(CliTest, UnknownCommandPrintsHelp) {
 
     EXPECT_NE(contents.find("new"), std::string::npos);
 }
+
+
