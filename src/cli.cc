@@ -31,7 +31,7 @@ bool DispatchCommand(const std::vector<std::string>& command_args, bool automate
     std::vector<std::string> args(command_args.begin() + 1, command_args.end());
 
     if (command == "--version") {
-        std::cout << "note-db v0.1" << std::endl;
+        std::cout << "note-db v1.0" << std::endl;
         return true;
     }
 
